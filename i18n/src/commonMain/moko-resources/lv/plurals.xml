@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <plurals name="missing_ext_entries">
+        <item quantity="zero">%d ierakstu jūsu bibliotēkā</item>
+        <item quantity="one">%d ieraksts jūsu bibliotēkā</item>
+        <item quantity="other">%d ieraksti jūsu bibliotēkā</item>
+    </plurals>
     <plurals name="restore_completed_message">
         <item quantity="zero">Pabeigts %1$s ar %2$s kļūdām</item>
         <item quantity="one">Pabeigts %1$s ar %2$s kļūdu</item>

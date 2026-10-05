@@ -1,0 +1,23 @@
+-- Only stamp the favourite timestamp when the favourite state actually changed.
+--
+-- Migration 15 guarded this trigger with `is_syncing = 0` so a sync would not overwrite the
+-- timestamp it had just received. That guard is not enough on its own: SQLite fires an
+-- `AFTER UPDATE OF favorite` trigger whenever the column appears in the SET clause, even if the
+-- value is unchanged. Restoring an entry ends with a fetch-interval update that both mentions
+-- `favorite` and sets `is_syncing` back to 0, so the trigger fired anyway and stamped the merge
+-- time over the incoming one.
+--
+-- The effect was that every merged entry ended up with a timestamp newer than the device it came
+-- from, so the receiving device won every later arbitration and additions or removals stopped
+-- propagating. Comparing the value itself makes the trigger correct regardless of which statement
+-- touched the column.
+DROP TRIGGER IF EXISTS update_last_favorited_at_mangas;
+
+CREATE TRIGGER update_last_favorited_at_mangas
+AFTER UPDATE OF favorite ON mangas
+WHEN new.is_syncing = 0 AND new.favorite != old.favorite
+BEGIN
+  UPDATE mangas
+  SET favorite_modified_at = strftime('%s', 'now')
+  WHERE _id = new._id;
+END;

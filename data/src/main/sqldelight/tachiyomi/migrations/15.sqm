@@ -1,0 +1,17 @@
+-- Guard the favourite timestamp against sync writes.
+--
+-- `favorite_modified_at` is what lets a sync tell whether a remote "removed from library" is newer
+-- than the local state, and so whether a removal should propagate between devices. Until now the
+-- trigger fired during restores too, stamping every restored row with the current time and wiping
+-- that signal out. Restores set `is_syncing = 1`, so skipping the trigger in that case preserves the
+-- incoming timestamp while leaving ordinary user actions untouched.
+DROP TRIGGER IF EXISTS update_last_favorited_at_mangas;
+
+CREATE TRIGGER update_last_favorited_at_mangas
+AFTER UPDATE OF favorite ON mangas
+WHEN new.is_syncing = 0
+BEGIN
+  UPDATE mangas
+  SET favorite_modified_at = strftime('%s', 'now')
+  WHERE _id = new._id;
+END;

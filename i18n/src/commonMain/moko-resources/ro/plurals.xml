@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <plurals name="missing_ext_entries">
+        <item quantity="one">%d intrare în biblioteca ta</item>
+        <item quantity="few">%d intrări în biblioteca ta</item>
+        <item quantity="other">%d de intrări în biblioteca ta</item>
+    </plurals>
     <plurals name="lock_after_mins">
         <item quantity="one">După %1$s minut</item>
         <item quantity="few">După %1$s minute</item>

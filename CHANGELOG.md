@@ -17,6 +17,8 @@ The format is a modified version of [Keep a Changelog](https://keepachangelog.co
 - Add support for using the user's chosen rating system for Kitsu ([@MajorTanya](https://github.com/MajorTanya)) ([#3818](https://github.com/mihonapp/mihon/pull/3818))
 - Add support for the Year, Month, and Day fields in ComicInfo.xml files for chapter dating ([@MajorTanya](https://github.com/MajorTanya)) ([#3967](https://github.com/mihonapp/mihon/pull/3967))
 - Add refresh buttons to trackers in Settings to update displayed usernames (all trackers) & rating systems (where supported) ([@MajorTanya](https://github.com/MajorTanya)) ([#3828](https://github.com/mihonapp/mihon/pull/3828))
+- Add Google Drive sync to keep the library, reading progress, categories, extension repos and pinned sources in step across devices ([@FurTorie](https://github.com/FurTorie))
+  - Add a list of the extensions the library uses but this device lacks, also offered when opening an entry whose source is missing ([@FurTorie](https://github.com/FurTorie))
 
 ### Improved
 - Show updates and upcoming filter icon as active for categories ([@Secozzi](https://github.com/Secozzi)) ([#3772](https://github.com/mihonapp/mihon/pull/3772))
@@ -30,6 +32,7 @@ The format is a modified version of [Keep a Changelog](https://keepachangelog.co
 - Fixed MangaBaka scores being wrong when score step size was set to > 1 ([@MajorTanya](https://github.com/MajorTanya)) ([#3740](https://github.com/mihonapp/mihon/pull/3740))
 - Fixed default category and manga sometimes not getting their category set when restoring a backup ([@Secozzi](https://github.com/Secozzi)) ([#3891](https://github.com/mihonapp/mihon/pull/3891))
 - Fixed AniList rate limit ([@MajorTanya](https://github.com/MajorTanya)) ([#3942](https://github.com/mihonapp/mihon/pull/3942))
+- Fixed restoring a backup resetting the last update date and cover timestamp of entries already in the library ([@FurTorie](https://github.com/FurTorie))
 
 ## [v0.20.4] - 2026-08-05
 ### Fixed

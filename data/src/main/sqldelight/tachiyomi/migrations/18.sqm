@@ -1,0 +1,13 @@
+-- Count leaving a category as a change, like joining one.
+--
+-- Only inserts bumped the entry's version, so taking an entry out of every category changed nothing
+-- the sync could see: the change stayed on the device it was made on, and the next copy of the entry
+-- from another device put the categories straight back. Moving an entry between categories deletes
+-- and inserts, which is why only removing the last one went unnoticed. Deleting a category removes
+-- its memberships through the foreign key, and those deletions fire this trigger too.
+CREATE TRIGGER delete_manga_category_update_version AFTER DELETE ON mangas_categories
+BEGIN
+    UPDATE mangas
+    SET version = version + 1
+    WHERE _id = old.manga_id AND (SELECT is_syncing FROM mangas WHERE _id = old.manga_id) = 0;
+END;

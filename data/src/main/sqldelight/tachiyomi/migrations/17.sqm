@@ -1,0 +1,32 @@
+-- Record when a chapter's read state was last decided, so a correction can travel between devices.
+--
+-- Until now the sync merged read state by union — read anywhere meant read everywhere, and progress
+-- only ever took the higher page. That protects the common case, where one device is simply further
+-- along and must not be dragged back. But it also makes a deliberate correction impossible to
+-- share: marking chapters unread, or moving from "at 13" back to "at 5", never left the device it
+-- was made on.
+--
+-- The two cases want opposite rules, and what separates them is intent. `last_modified_at` cannot
+-- express it: it moves on any write to the row, including a metadata refresh from the source, so a
+-- device that merely updated its chapter list would look like it had made the most recent decision.
+-- This column moves only when read, bookmark or page actually change — the same condition the
+-- version trigger already tests.
+ALTER TABLE chapters ADD COLUMN read_modified_at INTEGER NOT NULL DEFAULT 0;
+
+DROP TRIGGER IF EXISTS update_chapter_and_manga_version;
+
+CREATE TRIGGER update_chapter_and_manga_version AFTER UPDATE ON chapters
+WHEN new.is_syncing = 0 AND (
+    new.read != old.read OR
+    new.bookmark != old.bookmark OR
+    new.last_page_read != old.last_page_read
+)
+BEGIN
+    -- Update the chapter version, and stamp when the reading state was decided
+    UPDATE chapters SET version = version + 1, read_modified_at = strftime('%s', 'now')
+    WHERE _id = new._id;
+
+    -- Update the manga version
+    UPDATE mangas SET version = version + 1
+    WHERE _id = new.manga_id AND (SELECT is_syncing FROM mangas WHERE _id = new.manga_id) = 0;
+END;

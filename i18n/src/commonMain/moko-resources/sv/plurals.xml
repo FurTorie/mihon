@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <plurals name="missing_ext_entries">
+        <item quantity="one">%d post i ditt bibliotek</item>
+        <item quantity="other">%d poster i ditt bibliotek</item>
+    </plurals>
     <plurals name="lock_after_mins">
         <item quantity="one">Efter %1$s minut</item>
         <item quantity="other">Efter %1$s minuter</item>

@@ -1,7 +1,6 @@
 package eu.kanade.tachiyomi.data.backup.create.creators
 
 import app.cash.sqldelight.async.coroutines.awaitAsList
-import app.cash.sqldelight.async.coroutines.awaitAsOne
 import dev.zacsweers.metro.Inject
 import eu.kanade.tachiyomi.data.backup.create.BackupOptions
 import eu.kanade.tachiyomi.data.backup.models.BackupChapter
@@ -70,11 +69,17 @@ class MangaBackupCreator(
         if (options.history) {
             val historyByMangaId = getHistory.await(manga.id)
             if (historyByMangaId.isNotEmpty()) {
-                val history = historyByMangaId.map { history ->
-                    val chapter = database.chaptersQueries
-                        .getChapterById(history.chapterId)
-                        .awaitAsOne()
-                    BackupHistory(chapter.url, history.readAt?.time ?: 0L, history.readDuration)
+                // One query for the entry rather than one per history row: a long reading history
+                // used to cost hundreds of round trips through the driver, which a sync pays for
+                // every entry it reconsiders.
+                val chapterUrls = database.chaptersQueries
+                    .getChapterUrlsByMangaId(manga.id)
+                    .awaitAsList()
+                    .associate { it.chapterId to it.url }
+
+                val history = historyByMangaId.mapNotNull { history ->
+                    val url = chapterUrls[history.chapterId] ?: return@mapNotNull null
+                    BackupHistory(url, history.readAt?.time ?: 0L, history.readDuration)
                 }
                 if (history.isNotEmpty()) {
                     mangaObject.history = history
@@ -109,4 +114,5 @@ private fun Manga.toBackupManga() =
         notes = this.notes,
         initialized = this.initialized,
         memo = MemoColumnAdapter.encode(this.memo),
+        chapterListAt = this.lastUpdate,
     )

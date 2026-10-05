@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <plurals name="missing_ext_entries">
+        <item quantity="one">%d položka vo vašej knižnici</item>
+        <item quantity="few">%d položky vo vašej knižnici</item>
+        <item quantity="many">%d položky vo vašej knižnici</item>
+        <item quantity="other">%d položiek vo vašej knižnici</item>
+    </plurals>
     <plurals name="notification_new_chapters_summary">
         <item quantity="one">Pre %d titul</item>
         <item quantity="few">Pre %d tituly</item>

@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <plurals name="missing_ext_entries">
+        <item quantity="one">%d įrašas jūsų bibliotekoje</item>
+        <item quantity="few">%d įrašai jūsų bibliotekoje</item>
+        <item quantity="many">%d įrašo jūsų bibliotekoje</item>
+        <item quantity="other">%d įrašų jūsų bibliotekoje</item>
+    </plurals>
     <plurals name="relative_time">
         <item quantity="one">Vakar</item>
         <item quantity="few">Prieš %1$d dienas</item>

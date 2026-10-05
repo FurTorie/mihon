@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <plurals name="missing_ext_entries">
+        <item quantity="one">%d مورد در کتابخانه شما</item>
+        <item quantity="other">%d مورد در کتابخانه شما</item>
+    </plurals>
     <plurals name="update_check_notification_ext_updates">
         <item quantity="one">به‌روزرسانی برای افزونه‌ موجود است</item>
         <item quantity="other">%d به‌روزرسانی برای افزونه‌ موجود است</item>

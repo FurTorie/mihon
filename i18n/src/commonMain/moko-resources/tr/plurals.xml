@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <plurals name="missing_ext_entries">
+        <item quantity="one">kitaplığında %d kayıt</item>
+        <item quantity="other">kitaplığında %d kayıt</item>
+    </plurals>
     <plurals name="lock_after_mins">
         <item quantity="one">%1$s dakika sonra</item>
         <item quantity="other">%1$s dakika sonra</item>

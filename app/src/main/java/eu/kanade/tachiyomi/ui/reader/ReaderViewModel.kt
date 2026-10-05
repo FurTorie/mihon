@@ -69,6 +69,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import logcat.LogPriority
+import mihon.sync.job.SyncJob
 import tachiyomi.core.common.preference.toggle
 import tachiyomi.core.common.util.lang.launchIO
 import tachiyomi.core.common.util.lang.launchNonCancellable
@@ -190,6 +191,15 @@ class ReaderViewModel(
 
     private var chapterToDownload: Download? = null
 
+    /**
+     * Whether this reading session changed anything the sync would publish.
+     *
+     * Opening an entry and leaving without turning a page rewrites the same page number, which the
+     * database trigger ignores — so there is nothing to send, and asking for a sync would cost a
+     * round trip and show the countdown for no reason.
+     */
+    private var hasUnpublishedChanges = false
+
     private val unfilteredChapterList by lazy {
         val manga = manga!!
         runBlocking { getChaptersByMangaId.await(manga.id, applyScanlatorFilter = false) }
@@ -310,6 +320,16 @@ class ReaderViewModel(
      */
     fun onActivityFinish() {
         deletePendingChapters()
+        // Leaving the reader is when progress is worth publishing: the page has just been written to
+        // the database, and the user is likely about to pick up on another device.
+        //
+        // Only when the session actually moved something, though. Opening an entry and leaving
+        // without turning a page writes the same values back, which the database ignores — asking
+        // for a sync there would cost a round trip and show the countdown for nothing.
+        if (hasUnpublishedChanges) {
+            SyncJob.onUserAction(context)
+            hasUnpublishedChanges = false
+        }
     }
 
     /**
@@ -576,10 +596,17 @@ class ReaderViewModel(
         chapterPageIndex = pageIndex
 
         if (!incognitoMode && page.status !is Page.State.Error) {
+            val previousPage = readerChapter.chapter.last_page_read
+            val wasRead = readerChapter.chapter.read
+
             readerChapter.chapter.last_page_read = pageIndex
 
             if (readerChapter.pages?.lastIndex == pageIndex) {
                 updateChapterProgressOnComplete(readerChapter)
+            }
+
+            if (previousPage != pageIndex || wasRead != readerChapter.chapter.read) {
+                hasUnpublishedChanges = true
             }
 
             updateChapter.await(
@@ -680,6 +707,8 @@ class ReaderViewModel(
         val chapter = getCurrentChapter()?.chapter ?: return
         val bookmarked = !chapter.bookmark
         chapter.bookmark = bookmarked
+        // Bookmarks travel in the sync payload too, so this counts as a change worth publishing.
+        hasUnpublishedChanges = true
 
         viewModelScope.launchNonCancellable {
             updateChapter.await(

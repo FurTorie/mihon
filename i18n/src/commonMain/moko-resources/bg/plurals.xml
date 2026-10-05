@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <plurals name="missing_ext_entries">
+        <item quantity="one">%d запис във вашата библиотека</item>
+        <item quantity="other">%d записа във вашата библиотека</item>
+    </plurals>
     <plurals name="update_check_notification_ext_updates">
         <item quantity="one">1 налично обновление за разширение</item>
         <item quantity="other">%d налични обновления за разширения</item>

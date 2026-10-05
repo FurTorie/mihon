@@ -44,6 +44,13 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.protobuf.ProtoBuf
 import mihon.core.metro.IsDebugBuild
 import mihon.domain.extension.interactor.GetExtensionStoreCountAsFlow
+import mihon.sync.SyncHistory
+import mihon.sync.SyncPreferences
+import mihon.sync.SyncScheduler
+import mihon.sync.SyncUsage
+import mihon.sync.auth.GoogleDriveAuth
+import mihon.sync.auth.GoogleDriveLoginActivity
+import mihon.sync.job.SyncJob
 import nl.adaptivity.xmlutil.serialization.XML
 import tachiyomi.domain.backup.service.BackupPreferences
 import tachiyomi.domain.category.interactor.GetCategories
@@ -75,6 +82,8 @@ interface AppGraph : ViewModelGraph {
     fun inject(notificationReceiver: NotificationReceiver)
     fun inject(notificationReceiver: SecureActivityDelegateImpl)
     fun inject(extensionInstallActivity: ExtensionInstallActivity)
+    fun inject(googleDriveLoginActivity: GoogleDriveLoginActivity)
+    fun inject(syncJob: SyncJob)
 
     val context: Context
 
@@ -92,6 +101,11 @@ interface AppGraph : ViewModelGraph {
     val privacyPreferences: PrivacyPreferences
     val securityPreferences: SecurityPreferences
     val downloadPreferences: DownloadPreferences
+    val syncPreferences: SyncPreferences
+    val syncScheduler: SyncScheduler
+    val googleDriveAuth: GoogleDriveAuth
+    val syncHistory: SyncHistory
+    val syncUsage: SyncUsage
 
     val crashLogUtil: CrashLogUtil
 

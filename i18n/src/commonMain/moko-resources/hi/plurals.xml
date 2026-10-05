@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <plurals name="missing_ext_entries">
+        <item quantity="one">आपकी लाइब्रेरी में %d प्रविष्टि</item>
+        <item quantity="other">आपकी लाइब्रेरी में %d प्रविष्टियाँ</item>
+    </plurals>
     <plurals name="lock_after_mins">
         <item quantity="one">%1$s मिनट के बाद</item>
         <item quantity="other">%1$s मिनटों के बाद</item>

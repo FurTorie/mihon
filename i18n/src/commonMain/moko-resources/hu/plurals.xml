@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <plurals name="missing_ext_entries">
+        <item quantity="one">%d bejegyzés a könyvtáradban</item>
+        <item quantity="other">%d bejegyzés a könyvtáradban</item>
+    </plurals>
     <plurals name="update_check_notification_ext_updates">
         <item quantity="one">Egy új bővítményfrissítés érhető el</item>
         <item quantity="other">%d bővítményfrissítés érhető el</item>

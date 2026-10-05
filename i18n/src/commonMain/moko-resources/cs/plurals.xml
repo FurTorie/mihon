@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <plurals name="missing_ext_entries">
+        <item quantity="one">%d položka ve vaší knihovně</item>
+        <item quantity="few">%d položky ve vaší knihovně</item>
+        <item quantity="many">%d položky ve vaší knihovně</item>
+        <item quantity="other">%d položek ve vaší knihovně</item>
+    </plurals>
     <plurals name="lock_after_mins">
         <item quantity="one">Po %1$s minutě</item>
         <item quantity="few">Po %1$s minutách</item>

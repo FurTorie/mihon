@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <plurals name="missing_ext_entries">
+        <item quantity="other">%d mục trong thư viện của bạn</item>
+    </plurals>
     <plurals name="update_check_notification_ext_updates">
         <item quantity="other">Có %d bản cập nhật cho phần mở rộng sẵn sàng</item>
     </plurals>

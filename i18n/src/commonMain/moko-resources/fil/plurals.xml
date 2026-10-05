@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <plurals name="missing_ext_entries">
+        <item quantity="one">%d entry sa iyong library</item>
+        <item quantity="other">%d na entry sa iyong library</item>
+    </plurals>
     <plurals name="lock_after_mins">
         <item quantity="one">Pagkatapos ng %1$s minuto</item>
         <item quantity="other">Pagkatapos ng %1$s na minuto</item>

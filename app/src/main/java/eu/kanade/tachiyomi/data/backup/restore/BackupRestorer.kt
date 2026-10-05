@@ -48,7 +48,7 @@ class BackupRestorer(
     private val categoriesRestorer: CategoriesRestorer,
     private val preferenceRestorer: PreferenceRestorer,
     private val extensionStoreRestorer: ExtensionStoreRestorer,
-    private val mangaRestorer: MangaRestorer,
+    mangaRestorerFactory: MangaRestorer.Factory,
     private val backupDecoder: BackupDecoder,
 ) {
 
@@ -56,6 +56,8 @@ class BackupRestorer(
     fun interface Factory {
         fun create(notifier: BackupNotifier, isSync: Boolean): BackupRestorer
     }
+
+    private val mangaRestorer = mangaRestorerFactory.create(isSync)
 
     private var restoreAmount = 0
     private val restoreProgress = AtomicInt(0)

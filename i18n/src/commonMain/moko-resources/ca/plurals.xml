@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <plurals name="missing_ext_entries">
+        <item quantity="one">%d entrada a la teva biblioteca</item>
+        <item quantity="many">%d entrades a la teva biblioteca</item>
+        <item quantity="other">%d entrades a la teva biblioteca</item>
+    </plurals>
     <plurals name="lock_after_mins">
         <item quantity="one">Després d’%1$s minut</item>
         <item quantity="many">Després de %1$s de minuts</item>

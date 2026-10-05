@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <plurals name="missing_ext_entries">
+        <item quantity="one">%d kohde kirjastossasi</item>
+        <item quantity="other">%d kohdetta kirjastossasi</item>
+    </plurals>
     <plurals name="lock_after_mins">
         <item quantity="one">Minuutin jälkeen</item>
         <item quantity="other">%1$s minuutin jälkeen</item>

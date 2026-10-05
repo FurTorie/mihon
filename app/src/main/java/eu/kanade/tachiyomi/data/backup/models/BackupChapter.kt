@@ -26,6 +26,11 @@ class BackupChapter(
     @ProtoNumber(11) var lastModifiedAt: Long = 0,
     @ProtoNumber(12) var version: Long = 0,
     @ProtoNumber(13) var memo: ByteArray = JsonObjectEmptyBytes,
+    /**
+     * When the reading state was decided on the device that produced this backup. Lets a correction
+     * — marking chapters unread, or moving back to an earlier one — reach the other devices.
+     */
+    @ProtoNumber(14) var readModifiedAt: Long = 0,
 ) {
     fun toChapterImpl(): Chapter {
         return Chapter.create().copy(
@@ -42,6 +47,7 @@ class BackupChapter(
             lastModifiedAt = this@BackupChapter.lastModifiedAt,
             version = this@BackupChapter.version,
             memo = MemoColumnAdapter.decode(this@BackupChapter.memo),
+            readModifiedAt = this@BackupChapter.readModifiedAt,
         )
     }
 }
@@ -63,6 +69,7 @@ val backupChapterMapper = {
         version: Long,
         _: Long,
         memo: JsonObject,
+        readModifiedAt: Long,
     ->
     BackupChapter(
         url = url,
@@ -78,5 +85,6 @@ val backupChapterMapper = {
         lastModifiedAt = lastModifiedAt,
         version = version,
         memo = MemoColumnAdapter.encode(memo),
+        readModifiedAt = readModifiedAt,
     )
 }

@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <plurals name="missing_ext_entries">
+        <item quantity="one">%d série dans votre bibliothèque</item>
+        <item quantity="many">%d séries dans votre bibliothèque</item>
+        <item quantity="other">%d séries dans votre bibliothèque</item>
+    </plurals>
     <plurals name="lock_after_mins">
         <item quantity="one">Après %1$s minute</item>
         <item quantity="many">Après %1$s minutes</item>

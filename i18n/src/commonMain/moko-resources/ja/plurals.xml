@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <plurals name="missing_ext_entries">
+        <item quantity="other">ライブラリ内の%d件</item>
+    </plurals>
     <plurals name="lock_after_mins">
         <item quantity="other">%1$s 分後</item>
     </plurals>

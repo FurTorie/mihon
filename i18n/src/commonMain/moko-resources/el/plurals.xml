@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <plurals name="missing_ext_entries">
+        <item quantity="one">%d καταχώριση στη βιβλιοθήκη σας</item>
+        <item quantity="other">%d καταχωρίσεις στη βιβλιοθήκη σας</item>
+    </plurals>
     <plurals name="notification_chapters_generic">
         <item quantity="one">%1$d νέο κεφάλαιο</item>
         <item quantity="other">%1$d νέα κεφάλαια</item>

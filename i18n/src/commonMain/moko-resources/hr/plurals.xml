@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <plurals name="missing_ext_entries">
+        <item quantity="one">%d unos u vašoj biblioteci</item>
+        <item quantity="few">%d unosa u vašoj biblioteci</item>
+        <item quantity="other">%d unosa u vašoj biblioteci</item>
+    </plurals>
     <plurals name="lock_after_mins">
         <item quantity="one">Nakon %1$s minute</item>
         <item quantity="few">Nakon %1$s minute</item>

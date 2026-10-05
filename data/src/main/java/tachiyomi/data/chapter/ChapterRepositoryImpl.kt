@@ -82,6 +82,9 @@ class ChapterRepositoryImpl(
                     version = chapterUpdate.version,
                     isSyncing = 0,
                     memo = chapterUpdate.memo?.let(MemoColumnAdapter::encode),
+                    // Left to the trigger, which stamps it only when the reading state really
+                    // changed. Only a sync has a meaningful timestamp of its own to impose.
+                    readModifiedAt = null,
                 )
             }
         }
@@ -155,6 +158,7 @@ class ChapterRepositoryImpl(
         version: Long,
         isSyncing: Long,
         memo: JsonObject,
+        readModifiedAt: Long,
     ): Chapter = Chapter(
         id = id,
         mangaId = mangaId,
@@ -171,5 +175,6 @@ class ChapterRepositoryImpl(
         lastModifiedAt = lastModifiedAt,
         version = version,
         memo = memo,
+        readModifiedAt = readModifiedAt,
     )
 }

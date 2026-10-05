@@ -203,6 +203,8 @@ class MangaRepositoryImpl(
                     status = value.status,
                     thumbnailUrl = value.thumbnailUrl,
                     favorite = value.favorite,
+                    // Left to the trigger: only a sync has a meaningful timestamp to impose.
+                    favoriteModifiedAt = null,
                     lastUpdate = value.lastUpdate,
                     nextUpdate = value.nextUpdate,
                     calculateInterval = value.fetchInterval?.toLong(),

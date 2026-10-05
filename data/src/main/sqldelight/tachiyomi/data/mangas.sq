@@ -37,8 +37,15 @@ CREATE INDEX library_favorite_index ON mangas(favorite) WHERE favorite = 1;
 CREATE INDEX mangas_url_index ON mangas(url);
 CREATE INDEX idx_mangas_source ON mangas(source);
 
+-- Skipped while syncing so the timestamp coming from another device survives the restore; it is what
+-- decides whether a removal from the library should propagate. See migrations 15 and 16.
+--
+-- The value comparison is not redundant: SQLite fires `AFTER UPDATE OF favorite` whenever the column
+-- appears in a SET clause, changed or not, and a restore ends with an update that mentions it while
+-- clearing is_syncing. Without this, every merged entry was stamped with the merge time.
 CREATE TRIGGER update_last_favorited_at_mangas
 AFTER UPDATE OF favorite ON mangas
+WHEN new.is_syncing = 0 AND new.favorite != old.favorite
 BEGIN
   UPDATE mangas
   SET favorite_modified_at = strftime('%s', 'now')
@@ -239,6 +246,7 @@ UPDATE mangas SET
     status = coalesce(:status, status),
     thumbnail_url = coalesce(:thumbnailUrl, thumbnail_url),
     favorite = coalesce(:favorite, favorite),
+    favorite_modified_at = coalesce(:favoriteModifiedAt, favorite_modified_at),
     last_update = coalesce(:lastUpdate, last_update),
     next_update = coalesce(:nextUpdate, next_update),
     initialized = coalesce(:initialized, initialized),

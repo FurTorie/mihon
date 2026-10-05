@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <plurals name="missing_ext_entries">
+        <item quantity="one">%d post i dit bibliotek</item>
+        <item quantity="other">%d poster i dit bibliotek</item>
+    </plurals>
     <plurals name="relative_time">
         <item quantity="one">I går</item>
         <item quantity="other">%1$d dage siden</item>

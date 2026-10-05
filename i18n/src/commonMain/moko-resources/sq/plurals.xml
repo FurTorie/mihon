@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <plurals name="missing_ext_entries">
+        <item quantity="one">%d zë në bibliotekën tuaj</item>
+        <item quantity="other">%d zëra në bibliotekën tuaj</item>
+    </plurals>
     <plurals name="lock_after_mins">
         <item quantity="one">Pas %1$s minutë</item>
         <item quantity="other">Pas %1$s minutash</item>

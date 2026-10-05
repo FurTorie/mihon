@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <plurals name="missing_ext_entries">
+        <item quantity="zero">%d عنصر في مكتبتك</item>
+        <item quantity="one">%d عنصر في مكتبتك</item>
+        <item quantity="two">%d عنصران في مكتبتك</item>
+        <item quantity="few">%d عناصر في مكتبتك</item>
+        <item quantity="many">%d عنصرًا في مكتبتك</item>
+        <item quantity="other">%d عنصر في مكتبتك</item>
+    </plurals>
     <plurals name="update_check_notification_ext_updates">
         <item quantity="zero">لايوجد تحديث للإضافة</item>
         <item quantity="one">يتوفر تحديث لإضافة</item>
