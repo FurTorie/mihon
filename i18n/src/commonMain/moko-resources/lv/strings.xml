@@ -791,4 +791,7 @@
     <string name="pref_sync_reset_summary">Aizmirst, ar ko šī ierīce jau ir apmainījusies, tāpēc nākamā sinhronizācija nolasīs visu no jauna. Nekas netiek dzēsts.</string>
     <string name="pref_sync_reset_confirm">Aizmirst, ar ko šī ierīce ir apmainījusies līdz šim? Nākamā sinhronizācija nolasīs visu no jauna. Nekas netiek dzēsts.</string>
     <string name="pref_sync_reset_done">Vietējais sinhronizācijas stāvoklis atiestatīts</string>
+    <string name="onboarding_sync_info">Vai izmantojat %1$s vairākās ierīcēs? Saistiet savu Google kontu, lai visur būtu viena un tā pati bibliotēka, lasīšanas progress un kategorijas – ar jūsu paša Google disku.</string>
+    <string name="onboarding_sync_linked">Saistīts ar %1$s. Bibliotēka tiek sinhronizēta fonā.</string>
+    <string name="onboarding_sync_later">Nav obligāti: to var izdarīt arī vēlāk iestatījumos.</string>
 </resources>

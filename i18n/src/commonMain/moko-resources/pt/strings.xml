@@ -950,4 +950,7 @@
     <string name="pref_sync_reset_summary">Esquece o que este dispositivo já trocou, por isso a próxima sincronização lê tudo de novo. Nada é eliminado.</string>
     <string name="pref_sync_reset_confirm">Esquecer o que este dispositivo trocou até agora? A próxima sincronização lerá tudo de novo. Nada é eliminado.</string>
     <string name="pref_sync_reset_done">Estado local de sincronização reposto</string>
+    <string name="onboarding_sync_info">Usa %1$s em vários dispositivos? Associe a sua conta Google para ter a mesma biblioteca, o mesmo progresso de leitura e as mesmas categorias em todos, através do seu próprio Google Drive.</string>
+    <string name="onboarding_sync_linked">Associado a %1$s. A sua biblioteca é sincronizada em segundo plano.</string>
+    <string name="onboarding_sync_later">Opcional: também pode fazê-lo mais tarde nas definições.</string>
 </resources>

@@ -968,4 +968,7 @@
     <string name="pref_sync_reset_summary">Melupakan apa yang peranti ini sudah tukar, jadi penyegerakan seterusnya membaca semuanya semula. Tiada apa-apa yang dipadam.</string>
     <string name="pref_sync_reset_confirm">Lupakan apa yang peranti ini sudah tukar setakat ini? Penyegerakan seterusnya akan membaca semuanya semula. Tiada apa-apa yang dipadam.</string>
     <string name="pref_sync_reset_done">Keadaan penyegerakan setempat ditetapkan semula</string>
+    <string name="onboarding_sync_info">Menggunakan %1$s pada lebih daripada satu peranti? Pautkan akaun Google anda untuk mendapatkan pustaka, kemajuan membaca dan kategori yang sama di semua peranti, melalui Google Drive anda sendiri.</string>
+    <string name="onboarding_sync_linked">Dipautkan kepada %1$s. Pustaka anda sedang disegerakkan di latar belakang.</string>
+    <string name="onboarding_sync_later">Pilihan: anda juga boleh melakukannya kemudian dalam tetapan.</string>
 </resources>

@@ -968,4 +968,7 @@
     <string name="pref_sync_reset_summary">この端末がすでにやり取りした内容を忘れるため、次の同期ではすべてを読み直します。削除されるものはありません。</string>
     <string name="pref_sync_reset_confirm">この端末がこれまでにやり取りした内容を忘れますか？次の同期ではすべてを読み直します。削除されるものはありません。</string>
     <string name="pref_sync_reset_done">この端末の同期状態をリセットしました</string>
+    <string name="onboarding_sync_info">%1$sを複数の端末で使っていますか？Googleアカウントを連携すると、ご自身のGoogleドライブを通じて、どの端末でも同じライブラリ、読書の進捗、カテゴリを使えます。</string>
+    <string name="onboarding_sync_linked">%1$sと連携しました。ライブラリはバックグラウンドで同期されます。</string>
+    <string name="onboarding_sync_later">任意：あとから設定で行うこともできます。</string>
 </resources>

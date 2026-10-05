@@ -1020,4 +1020,7 @@
     <string name="pref_sync_reset_summary">Oblida el que aquest dispositiu ja ha intercanviat, de manera que la propera sincronització ho torna a llegir tot. No s'esborra res.</string>
     <string name="pref_sync_reset_confirm">Voleu oblidar el que aquest dispositiu ha intercanviat fins ara? La propera sincronització ho tornarà a llegir tot. No s'esborra res.</string>
     <string name="pref_sync_reset_done">Estat local de sincronització restablert</string>
+    <string name="onboarding_sync_info">Fas servir %1$s en més d’un dispositiu? Vincula el teu compte de Google per tenir la mateixa biblioteca, el mateix progrés de lectura i les mateixes categories a tots, a través del teu propi Google Drive.</string>
+    <string name="onboarding_sync_linked">Vinculat a %1$s. La teva biblioteca se sincronitza en segon pla.</string>
+    <string name="onboarding_sync_later">Opcional: també ho pots fer més tard a la configuració.</string>
 </resources>

@@ -878,4 +878,7 @@
     <string name="pref_sync_reset_summary">ลืมสิ่งที่อุปกรณ์นี้แลกเปลี่ยนไปแล้ว การซิงก์ครั้งถัดไปจึงอ่านทุกอย่างใหม่ ไม่มีอะไรถูกลบ</string>
     <string name="pref_sync_reset_confirm">ลืมสิ่งที่อุปกรณ์นี้แลกเปลี่ยนไปแล้วหรือไม่ การซิงก์ครั้งถัดไปจะอ่านทุกอย่างใหม่ ไม่มีอะไรถูกลบ</string>
     <string name="pref_sync_reset_done">รีเซ็ตสถานะการซิงก์ในเครื่องแล้ว</string>
+    <string name="onboarding_sync_info">ใช้ %1$s บนหลายอุปกรณ์ใช่ไหม เชื่อมต่อบัญชี Google เพื่อให้มีคลัง ความคืบหน้าการอ่าน และหมวดหมู่เดียวกันในทุกอุปกรณ์ ผ่าน Google Drive ของคุณเอง</string>
+    <string name="onboarding_sync_linked">เชื่อมต่อกับ %1$s แล้ว คลังของคุณกำลังซิงค์อยู่เบื้องหลัง</string>
+    <string name="onboarding_sync_later">ไม่บังคับ: คุณสามารถทำสิ่งนี้ภายหลังได้ในการตั้งค่า</string>
 </resources>

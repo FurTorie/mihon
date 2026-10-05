@@ -997,4 +997,7 @@
     <string name="pref_sync_reset_summary">آنچه این دستگاه پیش‌تر مبادله کرده را فراموش می‌کند، پس همگام‌سازی بعدی همه‌چیز را دوباره می‌خواند. چیزی حذف نمی‌شود.</string>
     <string name="pref_sync_reset_confirm">آنچه این دستگاه تا کنون مبادله کرده فراموش شود؟ همگام‌سازی بعدی همه‌چیز را دوباره می‌خواند. چیزی حذف نمی‌شود.</string>
     <string name="pref_sync_reset_done">وضعیت محلی همگام‌سازی بازنشانی شد</string>
+    <string name="onboarding_sync_info">از %1$s روی چند دستگاه استفاده می‌کنید؟ حساب Google خود را پیوند دهید تا همه‌جا همان کتابخانه، همان پیشرفت مطالعه و همان دسته‌ها را داشته باشید، از طریق Google Drive خودتان.</string>
+    <string name="onboarding_sync_linked">به %1$s پیوند داده شد. کتابخانه شما در پس‌زمینه همگام‌سازی می‌شود.</string>
+    <string name="onboarding_sync_later">اختیاری: می‌توانید این کار را بعداً در تنظیمات هم انجام دهید.</string>
 </resources>

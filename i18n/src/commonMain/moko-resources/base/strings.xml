@@ -711,6 +711,9 @@
     <string name="pref_sync_reset_summary">Forgets what this device has already exchanged, so the next sync reads everything again. Nothing is deleted.</string>
     <string name="pref_sync_reset_confirm">Forget what this device has exchanged so far? The next sync reads everything again. Nothing is deleted.</string>
     <string name="pref_sync_reset_done">Local sync state reset</string>
+    <string name="onboarding_sync_info">Using %1$s on more than one device? Link your Google account to keep the same library, reading progress and categories on each of them, through your own Google Drive.</string>
+    <string name="onboarding_sync_linked">Linked to %1$s. Your library syncs in the background.</string>
+    <string name="onboarding_sync_later">Optional: you can also do this later in the settings.</string>
 
       <!-- Advanced section -->
     <string name="label_network">Networking</string>

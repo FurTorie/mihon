@@ -728,4 +728,7 @@
     <string name="pref_sync_reset_summary">Pamiršta, kuo šis įrenginys jau apsikeitė, todėl kitas sinchronizavimas viską perskaitys iš naujo. Niekas neištrinama.</string>
     <string name="pref_sync_reset_confirm">Pamiršti, kuo šis įrenginys apsikeitė iki šiol? Kitas sinchronizavimas viską perskaitys iš naujo. Niekas neištrinama.</string>
     <string name="pref_sync_reset_done">Vietinė sinchronizavimo būsena atstatyta</string>
+    <string name="onboarding_sync_info">Naudojate %1$s keliuose įrenginiuose? Susiekite savo „Google“ paskyrą, kad visur turėtumėte tą pačią biblioteką, skaitymo pažangą ir kategorijas – per savo „Google“ diską.</string>
+    <string name="onboarding_sync_linked">Susieta su %1$s. Biblioteka sinchronizuojama fone.</string>
+    <string name="onboarding_sync_later">Neprivaloma: tai galite padaryti ir vėliau nustatymuose.</string>
 </resources>

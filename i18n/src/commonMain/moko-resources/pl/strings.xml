@@ -884,4 +884,7 @@
     <string name="pref_sync_reset_summary">Zapomina, co to urządzenie już wymieniło, więc następna synchronizacja odczyta wszystko od nowa. Nic nie zostanie usunięte.</string>
     <string name="pref_sync_reset_confirm">Zapomnieć, co to urządzenie wymieniło do tej pory? Następna synchronizacja odczyta wszystko od nowa. Nic nie zostanie usunięte.</string>
     <string name="pref_sync_reset_done">Lokalny stan synchronizacji zresetowany</string>
+    <string name="onboarding_sync_info">Używasz %1$s na kilku urządzeniach? Połącz konto Google, aby mieć wszędzie tę samą bibliotekę, postęp czytania i kategorie – przez własny Dysk Google.</string>
+    <string name="onboarding_sync_linked">Połączono z %1$s. Biblioteka synchronizuje się w tle.</string>
+    <string name="onboarding_sync_later">Opcjonalnie: możesz to zrobić później w ustawieniach.</string>
 </resources>

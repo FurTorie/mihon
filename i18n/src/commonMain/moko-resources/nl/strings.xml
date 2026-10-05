@@ -962,4 +962,7 @@
     <string name="pref_sync_reset_summary">Vergeet wat dit apparaat al heeft uitgewisseld, zodat de volgende synchronisatie alles opnieuw leest. Er wordt niets verwijderd.</string>
     <string name="pref_sync_reset_confirm">Vergeten wat dit apparaat tot nu toe heeft uitgewisseld? De volgende synchronisatie leest alles opnieuw. Er wordt niets verwijderd.</string>
     <string name="pref_sync_reset_done">Lokale synchronisatiestatus gereset</string>
+    <string name="onboarding_sync_info">Gebruik je %1$s op meerdere apparaten? Koppel je Google-account om overal dezelfde bibliotheek, leesvoortgang en categorieën te hebben, via je eigen Google Drive.</string>
+    <string name="onboarding_sync_linked">Gekoppeld aan %1$s. Je bibliotheek wordt op de achtergrond gesynchroniseerd.</string>
+    <string name="onboarding_sync_later">Optioneel: je kunt dit ook later in de instellingen doen.</string>
 </resources>

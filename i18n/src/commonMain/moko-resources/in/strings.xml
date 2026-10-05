@@ -962,4 +962,7 @@
     <string name="pref_sync_reset_summary">Melupakan apa yang sudah dipertukarkan perangkat ini, sehingga sinkronisasi berikutnya membaca semuanya lagi. Tidak ada yang dihapus.</string>
     <string name="pref_sync_reset_confirm">Lupakan apa yang sudah dipertukarkan perangkat ini? Sinkronisasi berikutnya akan membaca semuanya lagi. Tidak ada yang dihapus.</string>
     <string name="pref_sync_reset_done">Status sinkronisasi lokal diatur ulang</string>
+    <string name="onboarding_sync_info">Menggunakan %1$s di lebih dari satu perangkat? Tautkan akun Google Anda agar pustaka, progres membaca, dan kategori tetap sama di semua perangkat, melalui Google Drive Anda sendiri.</string>
+    <string name="onboarding_sync_linked">Tertaut ke %1$s. Pustaka Anda disinkronkan di latar belakang.</string>
+    <string name="onboarding_sync_later">Opsional: Anda juga bisa melakukannya nanti di pengaturan.</string>
 </resources>

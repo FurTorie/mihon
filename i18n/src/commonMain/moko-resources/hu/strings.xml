@@ -879,4 +879,7 @@
     <string name="pref_sync_reset_summary">Elfelejti, mit cserélt már ki ez az eszköz, így a következő szinkronizálás mindent újra beolvas. Semmi sem törlődik.</string>
     <string name="pref_sync_reset_confirm">Elfelejtsük, mit cserélt ki eddig ez az eszköz? A következő szinkronizálás mindent újra beolvas. Semmi sem törlődik.</string>
     <string name="pref_sync_reset_done">A helyi szinkronizálási állapot visszaállítva</string>
+    <string name="onboarding_sync_info">Több eszközön használod a(z) %1$s alkalmazást? Kapcsold össze a Google-fiókodat, hogy mindenhol ugyanaz a könyvtár, olvasási előrehaladás és kategóriák legyenek – a saját Google Drive-odon keresztül.</string>
+    <string name="onboarding_sync_linked">Összekapcsolva: %1$s. A könyvtár a háttérben szinkronizálódik.</string>
+    <string name="onboarding_sync_later">Nem kötelező: később a beállításokban is megteheted.</string>
 </resources>

@@ -820,4 +820,7 @@
     <string name="pref_sync_reset_summary">שוכח מה המכשיר הזה כבר החליף, כך שהסנכרון הבא יקרא הכול מחדש. שום דבר לא נמחק.</string>
     <string name="pref_sync_reset_confirm">לשכוח מה המכשיר הזה החליף עד כה? הסנכרון הבא יקרא הכול מחדש. שום דבר לא נמחק.</string>
     <string name="pref_sync_reset_done">מצב הסנכרון המקומי אופס</string>
+    <string name="onboarding_sync_info">משתמשים ב־%1$s ביותר ממכשיר אחד? קשרו את חשבון Google שלכם כדי שתהיה לכם בכל מקום אותה ספרייה, אותה התקדמות קריאה ואותן קטגוריות, דרך Google Drive שלכם.</string>
+    <string name="onboarding_sync_linked">מקושר אל %1$s. הספרייה שלך מסונכרנת ברקע.</string>
+    <string name="onboarding_sync_later">אופציונלי: אפשר לעשות זאת גם מאוחר יותר בהגדרות.</string>
 </resources>

@@ -969,4 +969,7 @@
     <string name="pref_sync_reset_summary">Forgesas tion, kion ĉi tiu aparato jam interŝanĝis, do la sekva sinkronigo relegas ĉion. Nenio estas forigita.</string>
     <string name="pref_sync_reset_confirm">Ĉu forgesi tion, kion ĉi tiu aparato interŝanĝis ĝis nun? La sekva sinkronigo relegos ĉion. Nenio estas forigita.</string>
     <string name="pref_sync_reset_done">Loka sinkroniga stato restarigita</string>
+    <string name="onboarding_sync_info">Ĉu vi uzas %1$s en pluraj aparatoj? Ligu vian Google-konton por havi ĉie la saman bibliotekon, la saman legoprogreson kaj la samajn kategoriojn, per via propra Google Drive.</string>
+    <string name="onboarding_sync_linked">Ligita al %1$s. Via biblioteko sinkroniĝas fone.</string>
+    <string name="onboarding_sync_later">Nedeviga: vi ankaŭ povas fari tion poste en la agordoj.</string>
 </resources>

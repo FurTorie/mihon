@@ -974,4 +974,7 @@
     <string name="pref_sync_reset_summary">이 기기가 이미 주고받은 내용을 잊어버려, 다음 동기화에서 모두 다시 읽습니다. 삭제되는 것은 없습니다.</string>
     <string name="pref_sync_reset_confirm">이 기기가 지금까지 주고받은 내용을 잊을까요? 다음 동기화에서 모두 다시 읽습니다. 삭제되는 것은 없습니다.</string>
     <string name="pref_sync_reset_done">이 기기의 동기화 상태를 초기화했습니다</string>
+    <string name="onboarding_sync_info">%1$s을(를) 여러 기기에서 사용하시나요? Google 계정을 연결하면 내 Google 드라이브를 통해 모든 기기에서 같은 서재, 읽기 진행 상황, 카테고리를 유지할 수 있습니다.</string>
+    <string name="onboarding_sync_linked">%1$s에 연결되었습니다. 서재가 백그라운드에서 동기화됩니다.</string>
+    <string name="onboarding_sync_later">선택 사항: 나중에 설정에서도 할 수 있습니다.</string>
 </resources>

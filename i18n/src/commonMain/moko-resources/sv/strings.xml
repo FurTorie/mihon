@@ -961,4 +961,7 @@
     <string name="pref_sync_reset_summary">Glömmer vad den här enheten redan har utbytt, så nästa synkronisering läser om allt. Ingenting tas bort.</string>
     <string name="pref_sync_reset_confirm">Glömma vad den här enheten har utbytt hittills? Nästa synkronisering läser om allt. Ingenting tas bort.</string>
     <string name="pref_sync_reset_done">Lokalt synkroniseringstillstånd återställt</string>
+    <string name="onboarding_sync_info">Använder du %1$s på flera enheter? Länka ditt Google-konto för att ha samma bibliotek, läsframsteg och kategorier överallt, via din egen Google Drive.</string>
+    <string name="onboarding_sync_linked">Länkat till %1$s. Ditt bibliotek synkas i bakgrunden.</string>
+    <string name="onboarding_sync_later">Valfritt: du kan också göra det senare i inställningarna.</string>
 </resources>

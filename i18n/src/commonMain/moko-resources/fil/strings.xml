@@ -1017,4 +1017,7 @@
     <string name="pref_sync_reset_summary">Kinakalimutan ang naipagpalit na ng device na ito, kaya babasahin ulit ng susunod na sync ang lahat. Walang binubura.</string>
     <string name="pref_sync_reset_confirm">Kalimutan ang naipagpalit na ng device na ito? Babasahin ulit ng susunod na sync ang lahat. Walang binubura.</string>
     <string name="pref_sync_reset_done">Na-reset ang lokal na estado ng sync</string>
+    <string name="onboarding_sync_info">Gumagamit ng %1$s sa higit sa isang device? I-link ang iyong Google account para pareho ang library, progreso sa pagbabasa at mga kategorya sa bawat isa, gamit ang sarili mong Google Drive.</string>
+    <string name="onboarding_sync_linked">Naka-link sa %1$s. Sini-sync ang iyong library sa background.</string>
+    <string name="onboarding_sync_later">Opsyonal: magagawa mo rin ito mamaya sa mga setting.</string>
 </resources>

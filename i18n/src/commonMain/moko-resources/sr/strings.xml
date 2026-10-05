@@ -826,4 +826,7 @@
     <string name="pref_sync_reset_summary">Заборавља шта је овај уређај већ разменио, па ће следећа синхронизација све поново прочитати. Ништа се не брише.</string>
     <string name="pref_sync_reset_confirm">Заборавити шта је овај уређај разменио до сада? Следећа синхронизација ће све поново прочитати. Ништа се не брише.</string>
     <string name="pref_sync_reset_done">Локално стање синхронизације ресетовано</string>
+    <string name="onboarding_sync_info">Користите %1$s на више уређаја? Повежите свој Google налог да бисте свуда имали исту библиотеку, напредак читања и категорије – преко сопственог Google диска.</string>
+    <string name="onboarding_sync_linked">Повезано са %1$s. Библиотека се синхронизује у позадини.</string>
+    <string name="onboarding_sync_later">Опционо: ово можете да урадите и касније у подешавањима.</string>
 </resources>

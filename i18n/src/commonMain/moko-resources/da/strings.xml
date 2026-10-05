@@ -375,4 +375,7 @@
     <string name="pref_sync_reset_summary">Glemmer, hvad denne enhed allerede har udvekslet, så næste synkronisering læser alt igen. Intet slettes.</string>
     <string name="pref_sync_reset_confirm">Glemme, hvad denne enhed har udvekslet indtil nu? Næste synkronisering læser alt igen. Intet slettes.</string>
     <string name="pref_sync_reset_done">Lokal synkroniseringstilstand nulstillet</string>
+    <string name="onboarding_sync_info">Bruger du %1$s på flere enheder? Tilknyt din Google-konto for at have det samme bibliotek, de samme læsefremskridt og de samme kategorier overalt via dit eget Google Drev.</string>
+    <string name="onboarding_sync_linked">Tilknyttet %1$s. Dit bibliotek synkroniseres i baggrunden.</string>
+    <string name="onboarding_sync_later">Valgfrit: du kan også gøre det senere i indstillingerne.</string>
 </resources>

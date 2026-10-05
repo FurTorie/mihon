@@ -947,4 +947,7 @@
     <string name="pref_sync_reset_summary">Uită ce a schimbat deja acest dispozitiv, astfel încât următoarea sincronizare să citească totul din nou. Nu se șterge nimic.</string>
     <string name="pref_sync_reset_confirm">Uiți ce a schimbat până acum acest dispozitiv? Următoarea sincronizare va citi totul din nou. Nu se șterge nimic.</string>
     <string name="pref_sync_reset_done">Starea locală a sincronizării a fost resetată</string>
+    <string name="onboarding_sync_info">Folosești %1$s pe mai multe dispozitive? Conectează-ți contul Google ca să ai aceeași bibliotecă, același progres de lectură și aceleași categorii peste tot, prin propriul tău Google Drive.</string>
+    <string name="onboarding_sync_linked">Conectat la %1$s. Biblioteca se sincronizează în fundal.</string>
+    <string name="onboarding_sync_later">Opțional: poți face asta și mai târziu din setări.</string>
 </resources>

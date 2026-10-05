@@ -968,4 +968,7 @@
     <string name="pref_sync_reset_summary">Quên những gì thiết bị này đã trao đổi, nên lần đồng bộ sau sẽ đọc lại tất cả. Không có gì bị xóa.</string>
     <string name="pref_sync_reset_confirm">Quên những gì thiết bị này đã trao đổi đến giờ? Lần đồng bộ sau sẽ đọc lại tất cả. Không có gì bị xóa.</string>
     <string name="pref_sync_reset_done">Đã đặt lại trạng thái đồng bộ cục bộ</string>
+    <string name="onboarding_sync_info">Bạn dùng %1$s trên nhiều thiết bị? Liên kết tài khoản Google để có cùng thư viện, tiến độ đọc và danh mục trên mọi thiết bị, thông qua Google Drive của riêng bạn.</string>
+    <string name="onboarding_sync_linked">Đã liên kết với %1$s. Thư viện của bạn đang được đồng bộ trong nền.</string>
+    <string name="onboarding_sync_later">Tùy chọn: bạn cũng có thể làm việc này sau trong phần cài đặt.</string>
 </resources>

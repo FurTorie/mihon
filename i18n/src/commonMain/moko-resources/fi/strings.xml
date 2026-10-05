@@ -712,4 +712,7 @@
     <string name="pref_sync_reset_summary">Unohtaa, mitä tämä laite on jo vaihtanut, joten seuraava synkronointi lukee kaiken uudelleen. Mitään ei poisteta.</string>
     <string name="pref_sync_reset_confirm">Unohdetaanko, mitä tämä laite on tähän mennessä vaihtanut? Seuraava synkronointi lukee kaiken uudelleen. Mitään ei poisteta.</string>
     <string name="pref_sync_reset_done">Paikallinen synkronointitila nollattu</string>
+    <string name="onboarding_sync_info">Käytätkö %1$s-sovellusta useilla laitteilla? Yhdistä Google-tilisi, niin sinulla on kaikkialla sama kirjasto, lukuedistyminen ja kategoriat oman Google Drivesi kautta.</string>
+    <string name="onboarding_sync_linked">Yhdistetty tiliin %1$s. Kirjastosi synkronoidaan taustalla.</string>
+    <string name="onboarding_sync_later">Valinnainen: voit tehdä tämän myöhemmin myös asetuksissa.</string>
 </resources>

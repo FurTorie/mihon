@@ -950,4 +950,7 @@
     <string name="pref_sync_reset_summary">ينسى ما تبادله هذا الجهاز بالفعل، فتقرأ المزامنة التالية كل شيء من جديد. لا يُحذف أي شيء.</string>
     <string name="pref_sync_reset_confirm">هل تريد نسيان ما تبادله هذا الجهاز حتى الآن؟ ستقرأ المزامنة التالية كل شيء من جديد. لا يُحذف أي شيء.</string>
     <string name="pref_sync_reset_done">تمت إعادة تعيين حالة المزامنة المحلية</string>
+    <string name="onboarding_sync_info">هل تستخدم %1$s على أكثر من جهاز؟ اربط حساب Google الخاص بك لتحصل على المكتبة نفسها وتقدم القراءة نفسه والفئات نفسها في كل مكان، عبر Google Drive الخاص بك.</string>
+    <string name="onboarding_sync_linked">تم الربط بـ %1$s. تتم مزامنة مكتبتك في الخلفية.</string>
+    <string name="onboarding_sync_later">اختياري: يمكنك القيام بذلك لاحقًا من الإعدادات أيضًا.</string>
 </resources>

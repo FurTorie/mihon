@@ -328,4 +328,7 @@
     <string name="pref_sync_reset_summary">Gløymer kva denne eininga allereie har utveksla, slik at neste synkronisering les alt på nytt. Ingenting blir sletta.</string>
     <string name="pref_sync_reset_confirm">Gløyme kva denne eininga har utveksla så langt? Neste synkronisering les alt på nytt. Ingenting blir sletta.</string>
     <string name="pref_sync_reset_done">Lokal synkroniseringstilstand nullstilt</string>
+    <string name="onboarding_sync_info">Brukar du %1$s på fleire einingar? Kopla til Google-kontoen din for å ha det same biblioteket, den same lesefremdrifta og dei same kategoriane overalt, via din eigen Google Disk.</string>
+    <string name="onboarding_sync_linked">Kopla til %1$s. Biblioteket ditt vert synkronisert i bakgrunnen.</string>
+    <string name="onboarding_sync_later">Valfritt: du kan òg gjere dette seinare i innstillingane.</string>
 </resources>

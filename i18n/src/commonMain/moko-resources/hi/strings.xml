@@ -997,4 +997,7 @@
     <string name="pref_sync_reset_summary">यह डिवाइस अब तक जो आदान-प्रदान कर चुका है उसे भूल जाता है, इसलिए अगली सिंक सब कुछ फिर से पढ़ती है। कुछ भी नहीं मिटता।</string>
     <string name="pref_sync_reset_confirm">यह डिवाइस अब तक जो आदान-प्रदान कर चुका है उसे भूल जाएँ? अगली सिंक सब कुछ फिर से पढ़ेगी। कुछ भी नहीं मिटता।</string>
     <string name="pref_sync_reset_done">स्थानीय सिंक स्थिति रीसेट हो गई</string>
+    <string name="onboarding_sync_info">क्या आप %1$s को एक से ज़्यादा डिवाइस पर इस्तेमाल करते हैं? अपना Google खाता जोड़ें, ताकि आपके अपने Google Drive के ज़रिए हर डिवाइस पर वही लाइब्रेरी, वही पढ़ने की प्रगति और वही श्रेणियाँ रहें।</string>
+    <string name="onboarding_sync_linked">%1$s से जुड़ा है। आपकी लाइब्रेरी बैकग्राउंड में सिंक हो रही है।</string>
+    <string name="onboarding_sync_later">वैकल्पिक: आप यह बाद में सेटिंग में भी कर सकते हैं।</string>
 </resources>

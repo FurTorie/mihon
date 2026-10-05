@@ -20,6 +20,7 @@ The format is a modified version of [Keep a Changelog](https://keepachangelog.co
 - Add setting to toggle chapter name hash suffix ([@choppeh](https://github.com/choppeh)) ([#3966](https://github.com/mihonapp/mihon/pull/3966))
 - Add Google Drive sync to keep the library, reading progress, categories, extension repos and pinned sources in step across devices ([@FurTorie](https://github.com/FurTorie))
   - Add a list of the extensions the library uses but this device lacks, also offered when opening an entry whose source is missing ([@FurTorie](https://github.com/FurTorie))
+  - Offer to link the Google account from the first-launch guide ([@FurTorie](https://github.com/FurTorie))
 
 ### Improved
 - Show updates and upcoming filter icon as active for categories ([@Secozzi](https://github.com/Secozzi)) ([#3772](https://github.com/mihonapp/mihon/pull/3772))

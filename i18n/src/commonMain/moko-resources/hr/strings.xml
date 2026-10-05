@@ -950,4 +950,7 @@
     <string name="pref_sync_reset_summary">Zaboravlja što je ovaj uređaj već razmijenio, pa će sljedeća sinkronizacija sve ponovno pročitati. Ništa se ne briše.</string>
     <string name="pref_sync_reset_confirm">Zaboraviti što je ovaj uređaj dosad razmijenio? Sljedeća sinkronizacija sve će ponovno pročitati. Ništa se ne briše.</string>
     <string name="pref_sync_reset_done">Lokalno stanje sinkronizacije poništeno</string>
+    <string name="onboarding_sync_info">Koristite %1$s na više uređaja? Povežite svoj Google račun kako biste svugdje imali istu knjižnicu, napredak čitanja i kategorije – putem vlastitog Google Diska.</string>
+    <string name="onboarding_sync_linked">Povezano s %1$s. Knjižnica se sinkronizira u pozadini.</string>
+    <string name="onboarding_sync_later">Neobavezno: to možete učiniti i kasnije u postavkama.</string>
 </resources>

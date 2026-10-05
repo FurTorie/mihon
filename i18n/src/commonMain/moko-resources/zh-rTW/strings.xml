@@ -990,4 +990,7 @@
     <string name="pref_sync_reset_summary">忘記本機已經交換過的內容，下次同步會重新讀取全部。不會刪除任何東西。</string>
     <string name="pref_sync_reset_confirm">忘記本機至今交換過的內容？下次同步將重新讀取全部。不會刪除任何東西。</string>
     <string name="pref_sync_reset_done">已重設本機同步狀態</string>
+    <string name="onboarding_sync_info">在多台裝置上使用 %1$s？連結你的 Google 帳戶，即可透過你自己的 Google 雲端硬碟，在每台裝置上保持相同的書庫、閱讀進度和分類。</string>
+    <string name="onboarding_sync_linked">已連結 %1$s。你的書庫正在背景同步。</string>
+    <string name="onboarding_sync_later">選用：你也可以稍後在設定中完成。</string>
 </resources>

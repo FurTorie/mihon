@@ -742,4 +742,7 @@
     <string name="pref_sync_reset_summary">Harron çfarë ka shkëmbyer tashmë kjo pajisje, kështu që sinkronizimi i radhës i lexon të gjitha sërish. Nuk fshihet asgjë.</string>
     <string name="pref_sync_reset_confirm">Të harrohet çfarë ka shkëmbyer kjo pajisje deri tani? Sinkronizimi i radhës do t’i lexojë të gjitha sërish. Nuk fshihet asgjë.</string>
     <string name="pref_sync_reset_done">Gjendja vendore e sinkronizimit u rivendos</string>
+    <string name="onboarding_sync_info">E përdorni %1$s në më shumë se një pajisje? Lidhni llogarinë tuaj Google për të pasur kudo të njëjtën bibliotekë, të njëjtin përparim leximi dhe të njëjtat kategori, përmes Google Drive-it tuaj.</string>
+    <string name="onboarding_sync_linked">U lidh me %1$s. Biblioteka juaj po sinkronizohet në sfond.</string>
+    <string name="onboarding_sync_later">Opsionale: mund ta bëni këtë edhe më vonë te cilësimet.</string>
 </resources>

@@ -1020,4 +1020,7 @@
     <string name="pref_sync_reset_summary">忘记本机已经交换过的内容，下次同步会重新读取全部。不会删除任何东西。</string>
     <string name="pref_sync_reset_confirm">忘记本机至今交换过的内容？下次同步将重新读取全部。不会删除任何东西。</string>
     <string name="pref_sync_reset_done">已重置本机同步状态</string>
+    <string name="onboarding_sync_info">在多台设备上使用 %1$s？关联你的 Google 账号，即可通过你自己的 Google 云端硬盘，在每台设备上保持相同的书库、阅读进度和分类。</string>
+    <string name="onboarding_sync_linked">已关联 %1$s。你的书库正在后台同步。</string>
+    <string name="onboarding_sync_later">可选：你也可以稍后在设置中完成。</string>
 </resources>

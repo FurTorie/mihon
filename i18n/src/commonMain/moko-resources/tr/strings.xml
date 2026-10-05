@@ -968,4 +968,7 @@
     <string name="pref_sync_reset_summary">Bu cihazın şimdiye kadar alıp verdiklerini unutur, böylece sonraki eşitleme her şeyi yeniden okur. Hiçbir şey silinmez.</string>
     <string name="pref_sync_reset_confirm">Bu cihazın şimdiye kadar alıp verdikleri unutulsun mu? Sonraki eşitleme her şeyi yeniden okur. Hiçbir şey silinmez.</string>
     <string name="pref_sync_reset_done">Yerel eşitleme durumu sıfırlandı</string>
+    <string name="onboarding_sync_info">%1$s uygulamasını birden fazla cihazda mı kullanıyorsunuz? Kendi Google Drive\'ınız üzerinden her yerde aynı kitaplığa, okuma ilerlemesine ve kategorilere sahip olmak için Google hesabınızı bağlayın.</string>
+    <string name="onboarding_sync_linked">%1$s hesabına bağlandı. Kitaplığınız arka planda eşitleniyor.</string>
+    <string name="onboarding_sync_later">İsteğe bağlı: bunu daha sonra ayarlardan da yapabilirsiniz.</string>
 </resources>

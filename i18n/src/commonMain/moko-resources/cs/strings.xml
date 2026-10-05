@@ -997,4 +997,7 @@
     <string name="pref_sync_reset_summary">Zapomene, co už toto zařízení vyměnilo, takže příští synchronizace načte vše znovu. Nic se nesmaže.</string>
     <string name="pref_sync_reset_confirm">Zapomenout, co toto zařízení dosud vyměnilo? Příští synchronizace načte vše znovu. Nic se nesmaže.</string>
     <string name="pref_sync_reset_done">Místní stav synchronizace obnoven</string>
+    <string name="onboarding_sync_info">Používáte %1$s na více zařízeních? Propojte svůj účet Google a mějte všude stejnou knihovnu, postup čtení i kategorie – přes svůj vlastní Disk Google.</string>
+    <string name="onboarding_sync_linked">Propojeno s %1$s. Knihovna se synchronizuje na pozadí.</string>
+    <string name="onboarding_sync_later">Volitelné: můžete to udělat i později v nastavení.</string>
 </resources>
