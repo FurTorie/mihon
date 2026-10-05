@@ -123,7 +123,7 @@ object SyncSettingsScreen : SearchableSettings {
                 Preference.PreferenceItem.SwitchPreference(
                     preference = syncPreferences.isEnabled(),
                     title = stringResource(MR.strings.pref_sync_enable),
-                    enabled = isSignedIn,
+                    visible = isSignedIn,
                     onValueChanged = {
                         // Scheduling follows the toggle, so turning sync off drops the periodic job.
                         SyncJob.setupTask(context)
@@ -133,19 +133,19 @@ object SyncSettingsScreen : SearchableSettings {
                 Preference.PreferenceItem.SwitchPreference(
                     preference = syncPreferences.syncOnAppLifecycle(),
                     title = stringResource(MR.strings.pref_sync_on_app_lifecycle),
-                    enabled = active,
+                    visible = active,
                     indented = true,
                 ),
                 Preference.PreferenceItem.SwitchPreference(
                     preference = syncPreferences.syncOnAction(),
                     title = stringResource(MR.strings.pref_sync_on_action),
-                    enabled = active,
+                    visible = active,
                     indented = true,
                 ),
                 Preference.PreferenceItem.SwitchPreference(
                     preference = syncPreferences.syncOnLibraryUpdate(),
                     title = stringResource(MR.strings.pref_sync_on_library_update),
-                    enabled = active,
+                    visible = active,
                     indented = true,
                 ),
                 Preference.PreferenceItem.ListPreference(
@@ -158,7 +158,7 @@ object SyncSettingsScreen : SearchableSettings {
                         48 to stringResource(MR.strings.update_48hour),
                     ),
                     title = stringResource(MR.strings.pref_sync_interval),
-                    enabled = active,
+                    visible = active,
                     indented = true,
                     onValueChanged = {
                         SyncJob.setupTask(context, it)
@@ -176,7 +176,7 @@ object SyncSettingsScreen : SearchableSettings {
 
         return Preference.PreferenceGroup(
             title = stringResource(MR.strings.pref_sync_group_sources),
-            enabled = active,
+            visible = active,
             preferenceItems = listOf(
                 Preference.PreferenceItem.SwitchPreference(
                     preference = syncPreferences.syncExtensionStores(),
@@ -186,14 +186,14 @@ object SyncSettingsScreen : SearchableSettings {
                     preference = syncPreferences.syncPinnedSources(),
                     title = stringResource(MR.strings.pref_sync_pinned_sources),
                     subtitle = stringResource(MR.strings.pref_sync_pinned_sources_summary),
-                    enabled = syncStores,
+                    visible = syncStores,
                     indented = true,
                 ),
                 Preference.PreferenceItem.SwitchPreference(
                     preference = syncPreferences.syncInstalledExtensions(),
                     title = stringResource(MR.strings.pref_sync_installed_extensions),
                     subtitle = stringResource(MR.strings.pref_sync_installed_extensions_summary),
-                    enabled = syncStores,
+                    visible = syncStores,
                     indented = true,
                 ),
                 Preference.PreferenceItem.TextPreference(

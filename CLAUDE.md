@@ -62,6 +62,8 @@ The same concept appears under three roots; this is a live migration, not an acc
 
 Build logic lives in `gradle/build-logic` (an **included build**). Convention plugins are applied as `mihonx.plugins.*` (ids `mihon.plugins.*`), and there are **two version catalogs**: `libs` (`gradle/libs.versions.toml`) for dependencies and `mihonx` (`gradle/mihon.versions.toml`) for SDK/NDK/Java versions and the convention plugin ids.
 
+The configuration cache and isolated projects are on: a build script must not reach into another project (`rootProject.file(...)` fails), so files at the repository root are read through `layout.settingsDirectory`.
+
 ## Dependency injection — Metro is the graph, Injekt is a shim
 
 - The real DI is **Metro** (`dev.zacsweers.metro`, compile-time). The graph is `AppGraph` (`app/src/main/java/mihon/app/di/AppGraph.kt`), created in `App.onCreate()`; `App` implements `GraphProvider<AppGraph>`.
@@ -99,6 +101,8 @@ New features are self-contained under `mihon/feature/<feature>/`. Prefer that.
 Schema in `data/src/main/sqldelight/tachiyomi/`: tables in `data/*.sq`, views in `view/*.sq`, migrations in `migrations/N.sqm`. The driver is **async** (`generateAsync = true`), so queries are consumed with `awaitAsList()` / `awaitAsOne()` / `awaitAsOneOrNull()`, or `subscribeToList()` for Flows.
 
 Any schema change needs **both** the `.sq` edit and a new `migrations/<next>.sqm`; `verifySqlDelightMigration` is a CI gate.
+
+`:app` has no access to `Database` (SQLDelight is not on its classpath): queries live in `:data`, behind a repository interface in `:domain`.
 
 ## Preferences
 

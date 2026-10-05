@@ -3,7 +3,6 @@ package mihon.sync
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
-import eu.kanade.tachiyomi.data.backup.models.BackupCategory
 import kotlinx.serialization.json.Json
 import logcat.LogPriority
 import mihon.sync.drive.DriveFile
@@ -14,6 +13,7 @@ import mihon.sync.merge.SyncCategoryMerge.Snapshot
 import tachiyomi.core.common.util.system.logcat
 import tachiyomi.domain.category.interactor.DeleteCategory
 import tachiyomi.domain.category.model.Category
+import tachiyomi.domain.category.model.NewCategory
 import tachiyomi.domain.category.repository.CategoryRepository
 import tachiyomi.domain.library.service.LibraryPreferences
 import kotlin.time.Clock
@@ -67,7 +67,7 @@ class SyncCategories(
         syncPreferences.categorySnapshot().set(json.encodeToString(Snapshot(merged, localIds)))
         documents.record(SyncLayout.CATEGORY_LIST_FILE, written.first, written.second)
 
-        return SyncCategoryIndex(merged, localIds)
+        return SyncCategoryIndex(localIds)
     }
 
     private class Remote(val file: DriveFile?, val catalogue: Catalogue)
@@ -133,9 +133,7 @@ class SyncCategories(
         for (entry in live) {
             val existing = localIds[entry.id]?.let(current::get)
             if (existing == null) {
-                categoryRepository.insert(
-                    Category(id = 0, name = entry.name, order = current.size.toLong(), flags = entry.flags),
-                )
+                categoryRepository.insert(NewCategory(name = entry.name, flags = entry.flags))
                 val created = categoryRepository.getAll()
                     .filter { it.name == entry.name && it.id !in localIds.values }
                     .maxByOrNull { it.id }
@@ -169,17 +167,12 @@ class SyncCategories(
  * How the library shards of one round refer to categories: by the stable id of the shared list,
  * never by a position, which differs from one device to the next.
  */
-class SyncCategoryIndex(catalogue: Catalogue, localIds: Map<Long, Long>) {
+class SyncCategoryIndex(private val localIdBySyncId: Map<Long, Long>) {
 
-    private val syncIdByLocalId = localIds.entries.associate { (syncId, localId) -> localId to syncId }
+    private val syncIdByLocalId = localIdBySyncId.entries.associate { (syncId, localId) -> localId to syncId }
 
     fun syncIdOf(localCategoryId: Long): Long? = syncIdByLocalId[localCategoryId]
 
-    /**
-     * The shared categories in the shape the restore reads: there, a category is looked up by the
-     * value an entry refers to it with, which for the sync is the id.
-     */
-    val backupCategories: List<BackupCategory> = catalogue.live.map { entry ->
-        BackupCategory(name = entry.name, order = entry.id, id = entry.id, flags = entry.flags)
-    }
+    /** The category here that a shard means by [syncId], if it still exists. */
+    fun localIdOf(syncId: Long): Long? = localIdBySyncId[syncId]
 }

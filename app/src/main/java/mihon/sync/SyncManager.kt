@@ -1,7 +1,6 @@
 package mihon.sync
 
 import android.content.Context
-import app.cash.sqldelight.async.coroutines.awaitAsList
 import com.hippo.unifile.UniFile
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Inject
@@ -11,15 +10,20 @@ import eu.kanade.tachiyomi.data.backup.create.BackupOptions
 import eu.kanade.tachiyomi.data.backup.create.creators.MangaBackupCreator
 import eu.kanade.tachiyomi.data.backup.models.Backup
 import eu.kanade.tachiyomi.data.backup.models.BackupManga
-import eu.kanade.tachiyomi.data.backup.restore.restorers.MangaRestorer
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.json.Json
 import logcat.LogPriority
+import mihon.domain.sync.model.SyncMangaState
+import mihon.domain.sync.model.SyncedChapter
+import mihon.domain.sync.model.SyncedManga
+import mihon.domain.sync.repository.SyncRepository
 import mihon.sync.auth.GoogleDriveAuth
 import mihon.sync.auth.SyncAuthRequiredException
 import mihon.sync.drive.DriveFile
@@ -29,9 +33,11 @@ import mihon.sync.model.SyncHistoryEntry
 import mihon.sync.model.SyncTally
 import tachiyomi.core.common.util.lang.withIOContext
 import tachiyomi.core.common.util.system.logcat
-import tachiyomi.data.Database
+import tachiyomi.domain.backup.model.RestoredHistory
+import tachiyomi.domain.backup.repository.RestoreRepository
 import tachiyomi.domain.category.interactor.GetCategories
 import tachiyomi.domain.category.model.Category
+import tachiyomi.domain.manga.interactor.FetchInterval
 import tachiyomi.domain.manga.interactor.GetFavorites
 import tachiyomi.domain.manga.interactor.GetMangaByUrlAndSourceId
 import tachiyomi.domain.manga.model.Manga
@@ -43,8 +49,8 @@ import kotlin.time.Clock
  *
  * The library is stored one file per entry rather than as a single archive: a chapter's progress
  * costs kilobytes to publish instead of the whole library, and two devices reading different series
- * never write to the same object. Each shard is still an ordinary Mihon backup holding exactly one
- * entry, so the merge is the existing, production-tested [MangaRestorer] rather than new code.
+ * never write to the same object. Each shard is an ordinary Mihon backup holding exactly one entry;
+ * only the merge differs from a restore, since it lets the latest decision win ([SyncRepository]).
  */
 @Inject
 @SingleIn(AppScope::class)
@@ -62,9 +68,10 @@ class SyncManager(
     private val getCategories: GetCategories,
     private val getFavorites: GetFavorites,
     private val getMangaByUrlAndSourceId: GetMangaByUrlAndSourceId,
-    private val database: Database,
+    private val syncRepository: SyncRepository,
+    private val restoreRepository: RestoreRepository,
     private val mangaBackupCreator: MangaBackupCreator,
-    private val mangaRestorerFactory: MangaRestorer.Factory,
+    private val fetchInterval: FetchInterval,
     private val backupCreatorFactory: BackupCreator.Factory,
     private val storageManager: StorageManager,
 ) {
@@ -204,7 +211,7 @@ class SyncManager(
         tally: SyncTally,
     ): List<DriveFile> {
         val favourites = getFavorites.await()
-        val fingerprints = chapterFingerprints()
+        val states = syncRepository.getStates()
         val favouritesByShard = favourites.associateBy { SyncLayout.mangaFileName(it.source, it.url) }
         val merge = ShardMerge(categoryIndex, favourites.associateBy { it.source to it.url }, tally)
 
@@ -227,13 +234,13 @@ class SyncManager(
                 // what this device made of it back then may be incomplete — its categories, for one,
                 // could not be resolved. Unless the entry changed here since: then this device's
                 // version is the newer one, and the push sends it as usual.
-                else -> !hasLocalChanges(known, favouritesByShard[remote.name], fingerprints)
+                else -> !hasLocalChanges(known, favouritesByShard[remote.name], states)
             }
         }
         if (changed.isEmpty()) return kept
 
         // Downloads go out together; the merge stays strictly serial. One round trip at a time made
-        // a real library take minutes, while interleaving writes to SQLite and its version triggers
+        // a real library take minutes, while interleaving writes to SQLite and its triggers
         // is not something to risk for the sake of a few seconds more.
         for (batch in changed.chunked(NETWORK_BATCH)) {
             val downloaded = coroutineScope {
@@ -292,7 +299,9 @@ class SyncManager(
         private val favouritesBefore: Map<Pair<Long, String>, Manga>,
         private val tally: SyncTally,
     ) {
-        private val restorer = mangaRestorerFactory.create(isSync = true)
+        private val timeZone = TimeZone.currentSystemDefault()
+        private val now = Clock.System.now().toLocalDateTime(timeZone)
+        private val fetchWindow = fetchInterval.getWindow(now.date, timeZone)
 
         /**
          * False when the shard could not be merged. It is then left for the next round rather than
@@ -308,14 +317,9 @@ class SyncManager(
             for (backupManga in backup.backupManga) {
                 val before = favouritesBefore[backupManga.source to backupManga.url]
                 try {
-                    restorer.restore(
-                        backupManga = backupManga,
-                        backupCategories = categoryIndex.backupCategories,
-                        // A shard written before categories had ids refers to them by position on the
-                        // device that wrote it, which nothing here can resolve. Its memberships are
-                        // left as they are until that device publishes the entry again.
-                        withCategories = backupManga.categories.all(SyncCategoryMerge::isSyncId),
-                    )
+                    syncRepository.merge(listOf(backupManga.toSyncedManga(categoryIndex))) {
+                        fetchInterval.withFetchInterval(it, now, timeZone, fetchWindow)
+                    }
                 } catch (e: CancellationException) {
                     throw e
                 } catch (e: Exception) {
@@ -330,6 +334,27 @@ class SyncManager(
             return true
         }
     }
+
+    /**
+     * A shard's entry in the shape the merge takes. A shard written before categories had ids refers to
+     * them by position on the device that wrote it, which nothing here can resolve: its memberships are
+     * left as they are until that device publishes the entry again.
+     */
+    private fun BackupManga.toSyncedManga(categoryIndex: SyncCategoryIndex) = SyncedManga(
+        manga = getMangaImpl(),
+        chapters = chapters.map { SyncedChapter(it.toChapterImpl(), it.readModifiedAt) },
+        categoryIds = categories
+            .takeIf { it.all(SyncCategoryMerge::isSyncId) }
+            ?.mapNotNull(categoryIndex::localIdOf),
+        history = history.map {
+            val history = it.getHistoryImpl()
+            RestoredHistory(it.url, history.readAt, history.readDuration)
+        },
+        tracks = tracking.map { it.getTrackImpl() },
+        excludedScanlators = excludedScanlators,
+        favoriteChangedAt = favoriteModifiedAt ?: 0L,
+        chapterListAt = chapterListAt,
+    )
 
     private fun recordPullChange(before: Manga?, incoming: BackupManga, tally: SyncTally) {
         when {
@@ -355,8 +380,7 @@ class SyncManager(
         val hash: String,
         val known: SyncShardState?,
         val remoteId: String?,
-        val chapterCount: Long,
-        val chapterModifiedAt: Long,
+        val changeCount: Long,
         val isRemoval: Boolean,
     )
 
@@ -370,7 +394,7 @@ class SyncManager(
         val round = PushRound(
             shards = shards,
             remoteByName = remoteShards.associateBy { it.name },
-            fingerprints = chapterFingerprints(),
+            states = syncRepository.getStates(),
             categoryIdByOrder = getCategories.await()
                 .filterNot(Category::isSystemCategory)
                 .mapNotNull { category -> categoryIndex.syncIdOf(category.id)?.let { category.order to it } }
@@ -399,34 +423,18 @@ class SyncManager(
     private class PushRound(
         val shards: MutableMap<String, SyncShardState>,
         val remoteByName: Map<String, DriveFile>,
-        val fingerprints: Map<Long, Pair<Long, Long>>,
+        val states: Map<Long, SyncMangaState>,
         val categoryIdByOrder: Map<Long, Long>,
     )
 
     /**
-     * Whether [manga] moved since [known] was recorded. Inserting chapters fires no trigger, so the
-     * chapter count and newest chapter modification are checked alongside the entry itself.
+     * Whether [manga] moved since [known] was recorded, which its change counter tells without building
+     * anything.
      */
-    private fun hasLocalChanges(
-        known: SyncShardState,
-        manga: Manga?,
-        fingerprints: Map<Long, Pair<Long, Long>>,
-    ): Boolean {
+    private fun hasLocalChanges(known: SyncShardState, manga: Manga?, states: Map<Long, SyncMangaState>): Boolean {
         if (manga == null) return false
-        val (chapterCount, chapterModifiedAt) = fingerprints[manga.id] ?: (0L to 0L)
-        return known.localVersion != manga.version ||
-            known.localModifiedAt != manga.lastModifiedAt ||
-            known.chapterCount != chapterCount ||
-            known.chapterModifiedAt != chapterModifiedAt
+        return known.changeCount != (states[manga.id]?.changeCount ?: 0L)
     }
-
-    /**
-     * Chapter count and newest chapter modification per entry, in one query for the whole library.
-     */
-    private suspend fun chapterFingerprints(): Map<Long, Pair<Long, Long>> =
-        database.chaptersQueries.getChapterFingerprints()
-            .awaitAsList()
-            .associate { it.mangaId to (it.chapterCount to it.chapterModifiedAt) }
 
     /**
      * Entries this device has taken out of its library.
@@ -440,12 +448,11 @@ class SyncManager(
      * of shards that actually went stale rather than the whole database.
      */
     private suspend fun prepareRemovals(round: PushRound, favouriteNames: Set<String>): List<PendingShard> {
-        val orphaned = database.mangasQueries.getAllMangaSourceAndUrl()
-            .awaitAsList()
-            .mapNotNull { row ->
-                val name = SyncLayout.mangaFileName(row.source, row.url)
-                if (name in round.shards && name !in favouriteNames) Triple(name, row.source, row.url) else null
+        val orphaned = restoreRepository.getMangaUrlsBySourceId()
+            .flatMap { (source, urls) ->
+                urls.map { url -> Triple(SyncLayout.mangaFileName(source, url), source, url) }
             }
+            .filter { (name) -> name in round.shards && name !in favouriteNames }
 
         return orphaned.mapNotNull { (name, source, url) ->
             val manga = getMangaByUrlAndSourceId.await(url, source) ?: return@mapNotNull null
@@ -465,17 +472,19 @@ class SyncManager(
     ): PendingShard? {
         val shards = round.shards
         val known = shards[name]
-        val (chapterCount, chapterModifiedAt) = round.fingerprints[manga.id] ?: (0L to 0L)
+        val state = round.states[manga.id]
+        val changeCount = state?.changeCount ?: 0L
 
         // Fast path: nothing local moved since the last reconciliation, so the payload cannot have
         // changed and there is no need to build it.
         val untouched = known != null &&
             known.contentHash.isNotEmpty() &&
             known.format >= SyncShardState.CURRENT_FORMAT &&
-            !hasLocalChanges(known, manga, round.fingerprints)
+            !hasLocalChanges(known, manga, round.states)
         if (untouched) return null
 
         val backupManga = mangaBackupCreator(listOf(manga), backupOptions()).firstOrNull() ?: return null
+        withSyncState(backupManga, manga, state)
         backupManga.categories = backupManga.categories.map { order ->
             // A category created since this round reconciled the list has no id yet. The entry goes
             // out next round, once the category itself has been published.
@@ -488,13 +497,7 @@ class SyncManager(
         // start a ping-pong with the other device. Recording the counters here is also what absorbs
         // a library refresh, where every modification time moves without the payload changing.
         if (known != null && known.contentHash == hash) {
-            shards[name] = known.copy(
-                localVersion = manga.version,
-                localModifiedAt = manga.lastModifiedAt,
-                chapterCount = chapterCount,
-                chapterModifiedAt = chapterModifiedAt,
-                format = SyncShardState.CURRENT_FORMAT,
-            )
+            shards[name] = known.copy(changeCount = changeCount, format = SyncShardState.CURRENT_FORMAT)
             return null
         }
 
@@ -505,10 +508,21 @@ class SyncManager(
             hash = hash,
             known = known,
             remoteId = round.remoteByName[name]?.id,
-            chapterCount = chapterCount,
-            chapterModifiedAt = chapterModifiedAt,
+            changeCount = changeCount,
             isRemoval = isRemoval,
         )
+    }
+
+    /**
+     * Adds what only the sync carries to an entry's backup: when it joined or left the library, when its
+     * chapter list last changed from the source, and when each chapter's reading state was decided.
+     */
+    private suspend fun withSyncState(backupManga: BackupManga, manga: Manga, state: SyncMangaState?) {
+        backupManga.favoriteModifiedAt = state?.favoriteChangedAt?.takeIf { it > 0 }
+        backupManga.chapterListAt = manga.lastUpdate
+        if (backupManga.chapters.isEmpty()) return
+        val decidedAt = syncRepository.getReadChangedAt(manga.id)
+        backupManga.chapters.forEach { it.readModifiedAt = decidedAt[it.url] ?: 0L }
     }
 
     private suspend fun upload(
@@ -531,10 +545,7 @@ class SyncManager(
                 shards[entry.name] = SyncShardState(
                     fileId = uploaded.id,
                     remoteVersion = uploaded.version,
-                    localVersion = entry.manga.version,
-                    localModifiedAt = entry.manga.lastModifiedAt,
-                    chapterCount = entry.chapterCount,
-                    chapterModifiedAt = entry.chapterModifiedAt,
+                    changeCount = entry.changeCount,
                     contentHash = entry.hash,
                     format = SyncShardState.CURRENT_FORMAT,
                     remoteMd5 = codec.md5(entry.payload),

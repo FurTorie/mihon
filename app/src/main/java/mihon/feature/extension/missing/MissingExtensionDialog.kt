@@ -77,7 +77,7 @@ fun MissingExtensionDialog(
                         Text(
                             text = step.label(),
                             style = MaterialTheme.typography.bodySmall,
-                            color = if (step == InstallStep.Error) {
+                            color = if (step is InstallStep.Error) {
                                 MaterialTheme.colorScheme.error
                             } else {
                                 MaterialTheme.colorScheme.onSurfaceVariant
@@ -98,7 +98,7 @@ fun MissingExtensionDialog(
                 ) {
                     Text(
                         stringResource(
-                            if (step == InstallStep.Error) MR.strings.action_retry else MR.strings.ext_install,
+                            if (step is InstallStep.Error) MR.strings.action_retry else MR.strings.ext_install,
                         ),
                     )
                 }
@@ -119,5 +119,5 @@ internal fun InstallStep.label(): String = when (this) {
     InstallStep.Downloading -> stringResource(MR.strings.ext_downloading)
     InstallStep.Installing -> stringResource(MR.strings.ext_installing)
     InstallStep.Installed -> stringResource(MR.strings.ext_installed)
-    InstallStep.Error -> stringResource(MR.strings.missing_ext_install_failed)
+    is InstallStep.Error -> stringResource(MR.strings.missing_ext_install_failed)
 }

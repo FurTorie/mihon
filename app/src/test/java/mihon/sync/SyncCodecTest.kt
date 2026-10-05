@@ -31,13 +31,9 @@ class SyncCodecTest {
     @Test
     fun `bookkeeping particular to one device does not count`() {
         assertSameIdentity { manga ->
-            manga.lastModifiedAt = 1_791_211_798
-            manga.version = 677
             manga.dateAdded = 1_700_000_000_000
             manga.chapterListAt = 1_759_000_000_000
             manga.chapters.forEach { chapter ->
-                chapter.lastModifiedAt = 1_791_211_798
-                chapter.version = 42
                 chapter.dateFetch = 1_700_000_000_000
                 chapter.dateUpload = 1_600_000_000_000
             }

@@ -16,16 +16,7 @@ data class Chapter(
     val dateUpload: Long,
     val chapterNumber: Double,
     val scanlator: String?,
-    val lastModifiedAt: Long,
-    val version: Long,
     val memo: JsonObject,
-    /**
-     * When the reading state was last decided, as opposed to when the row was last written.
-     *
-     * A source refresh rewrites chapter rows without anyone deciding anything, so [lastModifiedAt]
-     * cannot arbitrate between two devices. This only moves on a real read, bookmark or page change.
-     */
-    val readModifiedAt: Long = 0,
 ) {
     val isRecognizedNumber: Boolean
         get() = chapterNumber >= 0f
@@ -54,10 +45,7 @@ data class Chapter(
             dateUpload = -1,
             chapterNumber = -1.0,
             scanlator = null,
-            lastModifiedAt = 0,
-            version = 1,
             memo = JsonObject.EMPTY,
-            readModifiedAt = 0,
         )
     }
 }

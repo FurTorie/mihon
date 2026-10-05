@@ -115,7 +115,7 @@ class MissingExtensionsViewModel(
                 if (!isActive) current?.let { extensionManager.cancelInstallUpdateExtension(it.extension) }
                 _state.update { state ->
                     // Keep the failures on screen; drop the steps left mid-flight by a cancellation.
-                    state.copy(batch = null, installs = state.installs.filterValues { it == InstallStep.Error })
+                    state.copy(batch = null, installs = state.installs.filterValues { it is InstallStep.Error })
                 }
             }
         }
@@ -142,13 +142,13 @@ class MissingExtensionsViewModel(
 
             if (finished == null) {
                 logcat(LogPriority.WARN) { "Gave up waiting for $pkgName to finish installing" }
-                setStep(pkgName, InstallStep.Error)
+                setStep(pkgName, InstallStep.Error("Gave up waiting for the installer"))
             }
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
             logcat(LogPriority.ERROR, e) { "Could not install $pkgName" }
-            setStep(pkgName, InstallStep.Error)
+            setStep(pkgName, InstallStep.Error.from(e))
         }
     }
 

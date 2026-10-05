@@ -1,23 +1,113 @@
--- Only stamp the favourite timestamp when the favourite state actually changed.
---
--- Migration 15 guarded this trigger with `is_syncing = 0` so a sync would not overwrite the
--- timestamp it had just received. That guard is not enough on its own: SQLite fires an
--- `AFTER UPDATE OF favorite` trigger whenever the column appears in the SET clause, even if the
--- value is unchanged. Restoring an entry ends with a fetch-interval update that both mentions
--- `favorite` and sets `is_syncing` back to 0, so the trigger fired anyway and stamped the merge
--- time over the incoming one.
---
--- The effect was that every merged entry ended up with a timestamp newer than the device it came
--- from, so the receiving device won every later arbitration and additions or removals stopped
--- propagating. Comparing the value itself makes the trigger correct regardless of which statement
--- touched the column.
-DROP TRIGGER IF EXISTS update_last_favorited_at_mangas;
+-- Merge favorite, date_added and favorite_modified_at into favorite_at
 
-CREATE TRIGGER update_last_favorited_at_mangas
-AFTER UPDATE OF favorite ON mangas
-WHEN new.is_syncing = 0 AND new.favorite != old.favorite
-BEGIN
-  UPDATE mangas
-  SET favorite_modified_at = strftime('%s', 'now')
-  WHERE _id = new._id;
-END;
+DROP VIEW historyView;
+DROP VIEW libraryView;
+DROP VIEW updatesView;
+
+DROP TRIGGER update_last_favorited_at_mangas;
+DROP INDEX library_favorite_index;
+
+ALTER TABLE mangas ADD COLUMN favorite_at INTEGER;
+
+UPDATE mangas
+SET favorite_at = coalesce(nullif(date_added, 0), favorite_modified_at * 1000, 0)
+WHERE favorite = 1;
+
+ALTER TABLE mangas DROP COLUMN favorite;
+ALTER TABLE mangas DROP COLUMN date_added;
+ALTER TABLE mangas DROP COLUMN favorite_modified_at;
+
+CREATE INDEX library_favorite_at_index ON mangas(favorite_at) WHERE favorite_at IS NOT NULL;
+
+CREATE VIEW libraryView AS
+SELECT
+    M.*,
+    coalesce(C.total, 0) AS totalCount,
+    coalesce(C.readCount, 0) AS readCount,
+    coalesce(C.latestUpload, 0) AS latestUpload,
+    coalesce(C.fetchedAt, 0) AS chapterFetchedAt,
+    coalesce(C.lastRead, 0) AS lastRead,
+    coalesce(C.bookmarkCount, 0) AS bookmarkCount,
+    coalesce(MC.categories, '0') AS categories
+FROM mangas M
+LEFT JOIN (
+    SELECT
+        chapters.manga_id,
+        count(*) AS total,
+        sum(read) AS readCount,
+        coalesce(max(chapters.date_upload), 0) AS latestUpload,
+        coalesce(max(history.last_read), 0) AS lastRead,
+        coalesce(max(chapters.date_fetch), 0) AS fetchedAt,
+        sum(chapters.bookmark) AS bookmarkCount
+    FROM chapters
+    LEFT JOIN excluded_scanlators
+    ON chapters.manga_id = excluded_scanlators.manga_id
+    AND chapters.scanlator = excluded_scanlators.scanlator
+    LEFT JOIN history
+    ON chapters._id = history.chapter_id
+    WHERE excluded_scanlators.scanlator IS NULL
+    GROUP BY chapters.manga_id
+) AS C
+ON M._id = C.manga_id
+LEFT JOIN (
+    SELECT manga_id, group_concat(category_id) AS categories
+    FROM mangas_categories
+    GROUP BY manga_id
+) AS MC
+ON MC.manga_id = M._id
+WHERE M.favorite_at IS NOT NULL;
+
+CREATE VIEW updatesView AS
+SELECT
+    mangas._id AS mangaId,
+    mangas.title AS mangaTitle,
+    chapters._id AS chapterId,
+    chapters.name AS chapterName,
+    chapters.scanlator,
+    chapters.url AS chapterUrl,
+    chapters.read,
+    chapters.bookmark,
+    chapters.last_page_read,
+    mangas.source,
+    mangas.favorite_at IS NOT NULL AS favorite,
+    mangas.thumbnail_url AS thumbnailUrl,
+    mangas.cover_last_modified AS coverLastModified,
+    chapters.date_upload AS dateUpload,
+    chapters.date_fetch AS datefetch,
+    excluded_scanlators.scanlator AS excludedScanlator
+FROM mangas JOIN chapters
+ON mangas._id = chapters.manga_id
+LEFT JOIN excluded_scanlators
+ON mangas._id = excluded_scanlators.manga_id
+AND chapters.scanlator = excluded_scanlators.scanlator
+WHERE favorite_at IS NOT NULL
+AND date_fetch > favorite_at
+ORDER BY date_fetch DESC;
+
+CREATE VIEW historyView AS
+SELECT
+    history._id AS id,
+    mangas._id AS mangaId,
+    chapters._id AS chapterId,
+    mangas.title,
+    mangas.thumbnail_url AS thumbnailUrl,
+    mangas.source,
+    mangas.favorite_at IS NOT NULL AS favorite,
+    mangas.cover_last_modified,
+    chapters.chapter_number AS chapterNumber,
+    history.last_read AS readAt,
+    history.time_read AS readDuration,
+    max_last_read.last_read AS maxReadAt,
+    max_last_read.chapter_id AS maxReadAtChapterId
+FROM mangas
+JOIN chapters
+ON mangas._id = chapters.manga_id
+JOIN history
+ON chapters._id = history.chapter_id
+JOIN (
+    SELECT chapters.manga_id,chapters._id AS chapter_id, MAX(history.last_read) AS last_read
+    FROM chapters JOIN history
+    ON chapters._id = history.chapter_id
+    GROUP BY chapters.manga_id
+) AS max_last_read
+ON chapters.manga_id = max_last_read.manga_id;

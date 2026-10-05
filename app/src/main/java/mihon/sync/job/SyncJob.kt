@@ -17,8 +17,8 @@ import androidx.work.WorkQuery
 import androidx.work.WorkerParameters
 import dev.zacsweers.metro.Inject
 import eu.kanade.tachiyomi.data.backup.BackupNotifier
-import eu.kanade.tachiyomi.data.backup.create.BackupCreateJob
-import eu.kanade.tachiyomi.data.backup.restore.BackupRestoreJob
+import eu.kanade.tachiyomi.data.backup.create.BackupCreateWorker
+import eu.kanade.tachiyomi.data.backup.restore.BackupRestoreWorker
 import eu.kanade.tachiyomi.data.notification.Notifications
 import eu.kanade.tachiyomi.util.system.cancelNotification
 import eu.kanade.tachiyomi.util.system.isRunning
@@ -61,7 +61,7 @@ class SyncJob(private val context: Context, workerParams: WorkerParameters) :
         }
 
         // The backup jobs rewrite the same tables; let whichever started first finish.
-        if (BackupCreateJob.isManualJobRunning(context) || BackupRestoreJob.isRunning(context.workManager)) {
+        if (BackupCreateWorker.isManualJobRunning(context) || BackupRestoreWorker.isRunning(context.workManager)) {
             syncScheduler.onJobStopped()
             return Result.retry()
         }

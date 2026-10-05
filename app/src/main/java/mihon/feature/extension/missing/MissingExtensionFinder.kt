@@ -4,13 +4,14 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import eu.kanade.tachiyomi.extension.ExtensionManager
-import eu.kanade.tachiyomi.extension.api.ExtensionApi
 import eu.kanade.tachiyomi.extension.model.Extension
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.json.Json
+import mihon.domain.extension.repository.ExtensionStoreRepository
 import mihon.sync.SyncPreferences
 import mihon.sync.model.SyncExtensionRegistry
+import tachiyomi.core.common.util.lang.withIOContext
 import tachiyomi.domain.manga.interactor.GetFavorites
 import tachiyomi.domain.source.service.SourceManager
 import kotlin.time.Clock
@@ -24,7 +25,7 @@ import kotlin.time.Clock
 @Inject
 @SingleIn(AppScope::class)
 class MissingExtensionFinder(
-    private val extensionApi: ExtensionApi,
+    private val extensionStoreRepository: ExtensionStoreRepository,
     private val extensionManager: ExtensionManager,
     private val sourceManager: SourceManager,
     private val getFavorites: GetFavorites,
@@ -116,7 +117,7 @@ class MissingExtensionFinder(
         val isFresh = catalogue.isNotEmpty() && now - catalogueFetchedAt < CATALOGUE_TTL_MS
         if (isFresh && !refresh) return@withLock catalogue
 
-        catalogue = extensionApi.findExtensions()
+        catalogue = withIOContext { extensionStoreRepository.fetchExtensions() }
         catalogueFetchedAt = now
         catalogue
     }

@@ -85,8 +85,6 @@ class SyncCodec(
         MessageDigest.getInstance("MD5").digest(payload).joinToString("") { "%02x".format(it) }
 
     private fun BackupManga.reduceToIdentity() {
-        lastModifiedAt = 0
-        version = 0
         dateAdded = 0
         chapterListAt = 0
 
@@ -115,8 +113,6 @@ class SyncCodec(
      * when that was decided.
      */
     private fun BackupChapter.reduceToIdentity() {
-        lastModifiedAt = 0
-        version = 0
         dateFetch = 0
         dateUpload = 0
 

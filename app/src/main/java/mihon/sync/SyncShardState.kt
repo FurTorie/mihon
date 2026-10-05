@@ -12,25 +12,19 @@ import mihon.sync.drive.DriveFile
  * - [remoteVersion] is Drive's own counter. Comparing it — rather than modification times — is what
  *   stops a device re-downloading the shards it just uploaded, with no dependence on clocks agreeing
  *   between devices.
- * - [localVersion] and [localModifiedAt] are re-read *after* a merge. Restoring chapters bumps the
- *   local version through a database trigger, so without this a pull would immediately look like a
- *   local change and be pushed straight back — and the other device would do the same, forever.
+ * - [changeCount] is re-read *after* a merge. Merging chapters moves the entry's change counter through
+ *   the database triggers, so without this a pull would immediately look like a local change and be
+ *   pushed straight back, and the other device would do the same, forever.
  */
 @Serializable
 data class SyncShardState(
     @SerialName("fileId") val fileId: String,
     @SerialName("remoteVersion") val remoteVersion: String = "",
-    @SerialName("localVersion") val localVersion: Long = 0,
-    @SerialName("localModifiedAt") val localModifiedAt: Long = 0,
     /**
-     * Chapter count and newest chapter modification, as of the last reconciliation.
-     *
-     * The manga row alone is not enough to notice a source publishing a new release: inserting
-     * chapters fires no trigger, so neither the version nor the modification time moves. Without
-     * these two the new chapters would sit locally and never be published.
+     * The entry's change counter as of the last reconciliation. While it has not moved, nothing the sync
+     * publishes about the entry can have changed, so there is no need to rebuild its payload.
      */
-    @SerialName("chapterCount") val chapterCount: Long = -1,
-    @SerialName("chapterModifiedAt") val chapterModifiedAt: Long = -1,
+    @SerialName("changeCount") val changeCount: Long = -1,
     /**
      * Digest of the payload believed to be on Drive right now.
      *
@@ -58,6 +52,6 @@ data class SyncShardState(
         remote.version == remoteVersion || (remoteMd5.isNotEmpty() && remote.md5Checksum == remoteMd5)
 
     companion object {
-        const val CURRENT_FORMAT = 2
+        const val CURRENT_FORMAT = 3
     }
 }

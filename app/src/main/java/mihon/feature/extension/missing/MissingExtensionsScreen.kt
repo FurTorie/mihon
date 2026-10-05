@@ -210,7 +210,7 @@ class MissingExtensionsScreen : Screen() {
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                if (step == InstallStep.Error) {
+                if (step is InstallStep.Error) {
                     Text(
                         text = stringResource(MR.strings.missing_ext_install_failed),
                         style = MaterialTheme.typography.bodySmall,
@@ -223,7 +223,7 @@ class MissingExtensionsScreen : Screen() {
                 Text(
                     text = when {
                         step == null || step == InstallStep.Idle -> stringResource(MR.strings.ext_install)
-                        step == InstallStep.Error -> stringResource(MR.strings.action_retry)
+                        step is InstallStep.Error -> stringResource(MR.strings.action_retry)
                         else -> step.label()
                     },
                 )

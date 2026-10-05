@@ -36,11 +36,11 @@ class UpdateManga(
      *
      * Every path that adds or removes an entry — the entry screen, browsing, bulk removal from the
      * library, migration — funnels through here, so this is the one place that catches them all.
-     * Updates that leave `favorite` untouched, such as a metadata refresh during a library update,
-     * pass null and are ignored; otherwise a library refresh would trigger a sync per entry.
+     * Updates that leave `favoriteAt` untouched, such as a metadata refresh during a library update,
+     * are ignored; otherwise a library refresh would trigger a sync per entry.
      */
     private fun notifySyncIfFavoriteChanged(mangaUpdates: List<MangaUpdate>) {
-        if (mangaUpdates.none { it.favorite != null }) return
+        if (mangaUpdates.none { it.isSet(MangaUpdate::favoriteAt) }) return
 
         SyncJob.onUserAction(context)
     }
@@ -52,28 +52,27 @@ class UpdateManga(
         window: Pair<Long, Long> = fetchInterval.getWindow(dateTime.date, timeZone),
     ): Boolean {
         return mangaRepository.update(
-            fetchInterval.toMangaUpdate(manga, dateTime, timeZone, window),
+            fetchInterval.withFetchInterval(manga, dateTime, timeZone, window),
         )
     }
 
     suspend fun awaitUpdateLastUpdate(mangaId: Long): Boolean {
-        return mangaRepository.update(MangaUpdate(id = mangaId, lastUpdate = Clock.System.now().toEpochMilliseconds()))
+        return mangaRepository.update(MangaUpdate(mangaId) { lastUpdate = Clock.System.now().toEpochMilliseconds() })
     }
 
     suspend fun awaitUpdateCoverLastModified(mangaId: Long): Boolean {
         return mangaRepository.update(
-            MangaUpdate(
-                id = mangaId,
-                coverLastModified = Clock.System.now().toEpochMilliseconds(),
-            ),
+            MangaUpdate(mangaId) {
+                coverLastModified = Clock.System.now().toEpochMilliseconds()
+            },
         )
     }
 
     suspend fun awaitUpdateFavorite(mangaId: Long, favorite: Boolean): Boolean {
-        val dateAdded = when (favorite) {
-            true -> Clock.System.now().toEpochMilliseconds()
-            false -> 0
+        val update = when (favorite) {
+            true -> MangaUpdate(mangaId) { favoriteAt = Clock.System.now().toEpochMilliseconds() }
+            false -> MangaUpdate(mangaId) { favoriteAt = null }
         }
-        return await(MangaUpdate(id = mangaId, favorite = favorite, dateAdded = dateAdded))
+        return await(update)
     }
 }
