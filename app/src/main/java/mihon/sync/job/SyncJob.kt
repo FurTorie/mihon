@@ -60,6 +60,14 @@ class SyncJob(private val context: Context, workerParams: WorkerParameters) :
             return Result.success()
         }
 
+        // Without any account there is nothing to do, and nothing to report: only a grant that was lost
+        // needs the user. Restoring a backup turns the sync on before an account is linked, and the round
+        // the app starts on coming back from the sign-in page runs before the link is finished.
+        if (syncPreferences.refreshToken().get().isBlank() && syncPreferences.accountEmail().get().isBlank()) {
+            syncScheduler.onJobStopped()
+            return Result.success()
+        }
+
         // The backup jobs rewrite the same tables; let whichever started first finish.
         if (BackupCreateWorker.isManualJobRunning(context) || BackupRestoreWorker.isRunning(context.workManager)) {
             syncScheduler.onJobStopped()
