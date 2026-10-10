@@ -13,14 +13,15 @@ import eu.kanade.tachiyomi.network.await
 import eu.kanade.tachiyomi.network.awaitSuccess
 import eu.kanade.tachiyomi.network.parseAs
 import eu.kanade.tachiyomi.util.PkceUtil
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import logcat.LogPriority
 import mihon.sync.SyncPreferences
 import okhttp3.FormBody
 import okhttp3.Headers
-import tachiyomi.core.common.util.lang.withIOContext
 import tachiyomi.core.common.util.system.logcat
 import kotlin.time.Clock
 
@@ -193,7 +194,7 @@ class GoogleDriveAuth(
         syncPreferences.pendingAuthState().delete()
     }
 
-    private suspend fun requestToken(body: FormBody): GoogleTokenResponse = withIOContext {
+    private suspend fun requestToken(body: FormBody): GoogleTokenResponse = withContext(Dispatchers.IO) {
         val response = networkHelper.client.newCall(POST(TOKEN_URL, body = body)).await()
         response.use {
             if (!it.isSuccessful) {
@@ -219,7 +220,7 @@ class GoogleDriveAuth(
     /**
      * Best effort: the email is only shown in the settings, so a failure here must not fail login.
      */
-    private suspend fun fetchAccountEmail(accessToken: String): String = withIOContext {
+    private suspend fun fetchAccountEmail(accessToken: String): String = withContext(Dispatchers.IO) {
         try {
             val request = GET(USER_INFO_URL, headers = Headers.headersOf("Authorization", "Bearer $accessToken"))
             networkHelper.client.newCall(request).awaitSuccess().use {

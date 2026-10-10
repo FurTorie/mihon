@@ -6,7 +6,9 @@ import dev.zacsweers.metro.SingleIn
 import eu.kanade.tachiyomi.network.NetworkHelper
 import eu.kanade.tachiyomi.network.await
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import logcat.LogPriority
 import mihon.sync.SyncLayout
@@ -19,7 +21,6 @@ import okhttp3.MultipartBody
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
-import tachiyomi.core.common.util.lang.withIOContext
 import tachiyomi.core.common.util.system.logcat
 import java.io.IOException
 import kotlin.random.Random
@@ -44,7 +45,7 @@ class GoogleDriveApi(
     suspend fun findFolder(name: String, parentId: String? = null): DriveFile? =
         findByName(name, parentId, folder = true)
 
-    suspend fun createFolder(name: String, parentId: String? = null): DriveFile = withIOContext {
+    suspend fun createFolder(name: String, parentId: String? = null): DriveFile = withContext(Dispatchers.IO) {
         val metadata = buildString {
             append("""{"name":${json.encodeToString(name)},"mimeType":"${SyncLayout.FOLDER_MIME}"""")
             if (parentId != null) append(""","parents":["$parentId"]""")
@@ -71,7 +72,7 @@ class GoogleDriveApi(
     /**
      * Every file directly inside [folderId], following pagination. Folders are excluded.
      */
-    suspend fun listFolder(folderId: String): List<DriveFile> = withIOContext {
+    suspend fun listFolder(folderId: String): List<DriveFile> = withContext(Dispatchers.IO) {
         val collected = mutableListOf<DriveFile>()
         var pageToken: String? = null
 
@@ -101,14 +102,14 @@ class GoogleDriveApi(
      * Used right before publishing a shard, to notice that another device wrote to it since this
      * one last merged — overwriting that blindly would drop their change.
      */
-    suspend fun getMetadata(fileId: String): DriveFile? = withIOContext {
+    suspend fun getMetadata(fileId: String): DriveFile? = withContext(Dispatchers.IO) {
         val url = "$API_BASE/files/$fileId".toHttpUrl().newBuilder()
             .addQueryParameter("fields", FILE_FIELDS)
             .build()
 
         val response = executeOrNullOnMissing { token ->
             Request.Builder().url(url).headers(authHeaders(token)).get().build()
-        } ?: return@withIOContext null
+        } ?: return@withContext null
 
         json.decodeFromString<DriveFile>(response)
     }
@@ -119,14 +120,14 @@ class GoogleDriveApi(
      * Allowed under `drive.file`: the quota is about the account, not about anyone's files, so it
      * discloses nothing this app could not already ask for.
      */
-    suspend fun quota(): DriveQuota? = withIOContext {
+    suspend fun quota(): DriveQuota? = withContext(Dispatchers.IO) {
         val url = "$API_BASE/about".toHttpUrl().newBuilder()
             .addQueryParameter("fields", "storageQuota")
             .build()
 
         val response = executeOrNullOnMissing { token ->
             Request.Builder().url(url).headers(authHeaders(token)).get().build()
-        } ?: return@withIOContext null
+        } ?: return@withContext null
 
         json.decodeFromString<DriveAbout>(response).storageQuota
     }
@@ -134,7 +135,7 @@ class GoogleDriveApi(
     /**
      * Returns the raw payload, or null when the file no longer exists on the account.
      */
-    suspend fun download(fileId: String): ByteArray? = withIOContext {
+    suspend fun download(fileId: String): ByteArray? = withContext(Dispatchers.IO) {
         val url = "$API_BASE/files/$fileId".toHttpUrl().newBuilder()
             .addQueryParameter("alt", "media")
             .build()
@@ -143,7 +144,7 @@ class GoogleDriveApi(
             Request.Builder().url(url).headers(authHeaders(token)).get().build()
         }
         response.use {
-            if (it.code == 404) return@withIOContext null
+            if (it.code == 404) return@withContext null
             it.ensureSuccessful("downloading a sync file")
             it.body.bytes()
         }
@@ -156,7 +157,7 @@ class GoogleDriveApi(
         parentId: String,
         content: ByteArray,
         mimeType: String = BINARY_MIME,
-    ): DriveFile = withIOContext {
+    ): DriveFile = withContext(Dispatchers.IO) {
         val metadata = """{"name":${json.encodeToString(name)},"parents":["$parentId"]}"""
         val body = MultipartBody.Builder()
             .setType(MULTIPART_RELATED)
@@ -183,7 +184,7 @@ class GoogleDriveApi(
         fileId: String,
         content: ByteArray,
         mimeType: String = BINARY_MIME,
-    ): DriveFile? = withIOContext {
+    ): DriveFile? = withContext(Dispatchers.IO) {
         val url = "$UPLOAD_BASE/files/$fileId".toHttpUrl().newBuilder()
             .addQueryParameter("uploadType", "media")
             .addQueryParameter("fields", FILE_FIELDS)
@@ -195,7 +196,7 @@ class GoogleDriveApi(
                 .headers(authHeaders(token))
                 .patch(content.toRequestBody(mimeType.toMediaType()))
                 .build()
-        } ?: return@withIOContext null
+        } ?: return@withContext null
 
         json.decodeFromString<DriveFile>(response)
     }
@@ -227,14 +228,16 @@ class GoogleDriveApi(
     /**
      * Removes a file for good. Nothing happens when it is already gone.
      */
-    suspend fun delete(fileId: String): Unit = withIOContext {
+    suspend fun delete(fileId: String): Unit = withContext(Dispatchers.IO) {
         val url = "$API_BASE/files/$fileId".toHttpUrl()
         executeOrNullOnMissing { token ->
             Request.Builder().url(url).headers(authHeaders(token)).delete().build()
         }
     }
 
-    private suspend fun findByName(name: String, parentId: String?, folder: Boolean): DriveFile? = withIOContext {
+    private suspend fun findByName(name: String, parentId: String?, folder: Boolean): DriveFile? = withContext(
+        Dispatchers.IO,
+    ) {
         val escaped = name.replace("\\", "\\\\").replace("'", "\\'")
         val query = buildString {
             append("name = '$escaped' and trashed = false")

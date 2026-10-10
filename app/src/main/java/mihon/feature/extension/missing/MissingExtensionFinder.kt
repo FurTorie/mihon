@@ -5,13 +5,14 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.extension.model.Extension
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import mihon.domain.extension.repository.ExtensionStoreRepository
 import mihon.sync.SyncPreferences
 import mihon.sync.model.SyncExtensionRegistry
-import tachiyomi.core.common.util.lang.withIOContext
 import tachiyomi.domain.manga.interactor.GetFavorites
 import tachiyomi.domain.source.service.SourceManager
 import kotlin.time.Clock
@@ -117,7 +118,7 @@ class MissingExtensionFinder(
         val isFresh = catalogue.isNotEmpty() && now - catalogueFetchedAt < CATALOGUE_TTL_MS
         if (isFresh && !refresh) return@withLock catalogue
 
-        catalogue = withIOContext { extensionStoreRepository.fetchExtensions() }
+        catalogue = withContext(Dispatchers.IO) { extensionStoreRepository.fetchExtensions() }
         catalogueFetchedAt = now
         catalogue
     }

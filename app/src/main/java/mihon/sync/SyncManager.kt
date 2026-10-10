@@ -31,7 +31,6 @@ import mihon.sync.drive.GoogleDriveApi
 import mihon.sync.merge.SyncCategoryMerge
 import mihon.sync.model.SyncHistoryEntry
 import mihon.sync.model.SyncTally
-import tachiyomi.core.common.util.lang.withIOContext
 import tachiyomi.core.common.util.system.logcat
 import tachiyomi.domain.backup.model.RestoredHistory
 import tachiyomi.domain.backup.repository.RestoreRepository

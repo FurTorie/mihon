@@ -59,6 +59,8 @@ import eu.kanade.tachiyomi.util.lang.convertEpochMillisZone
 import eu.kanade.tachiyomi.util.system.copyToClipboard
 import eu.kanade.tachiyomi.util.system.openInBrowser
 import eu.kanade.tachiyomi.util.system.toast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -67,16 +69,15 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import logcat.LogPriority
 import mihon.app.di.appGraph
+import mihon.core.metro.AppCoroutineScope
 import mihon.icons.materialsymbols.MaterialSymbols
 import mihon.icons.materialsymbols.roundedfilled.Delete
 import tachiyomi.core.common.i18n.stringResource
-import tachiyomi.core.common.util.lang.launchNonCancellable
-import tachiyomi.core.common.util.lang.withIOContext
-import tachiyomi.core.common.util.lang.withUIContext
 import tachiyomi.core.common.util.system.logcat
 import tachiyomi.domain.manga.interactor.GetManga
 import tachiyomi.domain.source.service.SourceManager
@@ -201,6 +202,7 @@ data class TrackInfoDialogHomeScreen(
     class Model(
         @Assisted private val mangaId: Long,
         @Assisted private val sourceId: Long,
+        @AppCoroutineScope private val appScope: CoroutineScope,
         private val context: Context,
         private val getTracks: GetTracks,
         private val getManga: GetManga,
@@ -235,13 +237,13 @@ data class TrackInfoDialogHomeScreen(
 
         fun registerEnhancedTracking(item: TrackItem) {
             item.tracker as EnhancedTracker
-            viewModelScope.launchNonCancellable {
-                val manga = getManga.await(mangaId) ?: return@launchNonCancellable
+            appScope.launch {
+                val manga = getManga.await(mangaId) ?: return@launch
                 try {
                     val matchResult = item.tracker.match(manga) ?: throw Exception()
                     item.tracker.register(matchResult, mangaId)
                 } catch (_: Exception) {
-                    withUIContext {
+                    withContext(Dispatchers.Main) {
                         context.toast(MR.strings.error_no_match)
                     }
                 }
@@ -255,7 +257,7 @@ data class TrackInfoDialogHomeScreen(
                     logcat(LogPriority.ERROR, e) {
                         "Failed to refresh track data mangaId=$mangaId for service ${track!!.id}"
                     }
-                    withUIContext {
+                    withContext(Dispatchers.Main) {
                         context.toast(
                             context.stringResource(
                                 MR.strings.track_error,
@@ -268,7 +270,7 @@ data class TrackInfoDialogHomeScreen(
         }
 
         fun togglePrivate(item: TrackItem) {
-            viewModelScope.launchNonCancellable {
+            appScope.launch {
                 item.tracker.setRemotePrivate(item.track!!.toDbTrack(), !item.track.private)
             }
         }
@@ -316,6 +318,7 @@ data class TrackStatusSelectorScreen(
     class Model(
         @Assisted private val track: Track,
         @Assisted private val trackerId: Long,
+        @AppCoroutineScope private val appScope: CoroutineScope,
         trackerManager: TrackerManager,
     ) : ViewModel() {
 
@@ -340,7 +343,7 @@ data class TrackStatusSelectorScreen(
         }
 
         fun setStatus() {
-            viewModelScope.launchNonCancellable {
+            appScope.launch {
                 tracker.setRemoteStatus(track.toDbTrack(), state.value.selection)
             }
         }
@@ -379,6 +382,7 @@ data class TrackChapterSelectorScreen(
     class Model(
         @Assisted private val track: Track,
         @Assisted private val trackerId: Long,
+        @AppCoroutineScope private val appScope: CoroutineScope,
         trackerManager: TrackerManager,
     ) : ViewModel() {
 
@@ -408,7 +412,7 @@ data class TrackChapterSelectorScreen(
         }
 
         fun setChapter() {
-            viewModelScope.launchNonCancellable {
+            appScope.launch {
                 tracker.setRemoteLastChapterRead(track.toDbTrack(), state.value.selection)
             }
         }
@@ -447,6 +451,7 @@ data class TrackScoreSelectorScreen(
     class Model(
         @Assisted private val track: Track,
         @Assisted private val trackerId: Long,
+        @AppCoroutineScope private val appScope: CoroutineScope,
         trackerManager: TrackerManager,
     ) : ViewModel() {
 
@@ -475,7 +480,7 @@ data class TrackScoreSelectorScreen(
         }
 
         fun setScore() {
-            viewModelScope.launchNonCancellable {
+            appScope.launch {
                 tracker.setRemoteScore(track.toDbTrack(), state.value.selection)
             }
         }
@@ -574,6 +579,7 @@ data class TrackDateSelectorScreen(
         @Assisted private val track: Track,
         @Assisted private val trackerId: Long,
         @Assisted private val start: Boolean,
+        @AppCoroutineScope private val appScope: CoroutineScope,
         trackerManager: TrackerManager,
     ) : ViewModel() {
 
@@ -597,7 +603,7 @@ data class TrackDateSelectorScreen(
         fun setDate(millis: Long) {
             // Convert to local time
             val localMillis = millis.convertEpochMillisZone(TimeZone.UTC, TimeZone.currentSystemDefault())
-            viewModelScope.launchNonCancellable {
+            appScope.launch {
                 if (start) {
                     tracker.setRemoteStartDate(track.toDbTrack(), localMillis)
                 } else {
@@ -678,6 +684,7 @@ data class TrackDateRemoverScreen(
         @Assisted private val track: Track,
         @Assisted private val trackerId: Long,
         @Assisted private val start: Boolean,
+        @AppCoroutineScope private val appScope: CoroutineScope,
         trackerManager: TrackerManager,
     ) : ViewModel() {
 
@@ -693,7 +700,7 @@ data class TrackDateRemoverScreen(
         fun getServiceName() = tracker.name
 
         fun removeDate() {
-            viewModelScope.launchNonCancellable {
+            appScope.launch {
                 if (start) {
                     tracker.setRemoteStartDate(track.toDbTrack(), 0)
                 } else {
@@ -749,6 +756,7 @@ data class TrackerSearchScreen(
         @Assisted private val currentUrl: String?,
         @Assisted initialQuery: String,
         @Assisted private val trackerId: Long,
+        @AppCoroutineScope private val appScope: CoroutineScope,
         trackerManager: TrackerManager,
     ) : ViewModel() {
 
@@ -783,7 +791,7 @@ data class TrackerSearchScreen(
                 // To show loading state
                 state.update { it.copy(queryResult = null, selected = null) }
 
-                val result = withIOContext {
+                val result = withContext(Dispatchers.IO) {
                     try {
                         val results = tracker.search(query)
                         Result.success(results)
@@ -801,7 +809,7 @@ data class TrackerSearchScreen(
         }
 
         fun registerTracking(item: TrackSearch) {
-            viewModelScope.launchNonCancellable { tracker.register(item, mangaId) }
+            appScope.launch { tracker.register(item, mangaId) }
         }
 
         fun updateSelection(selected: TrackSearch) {
@@ -895,6 +903,7 @@ data class TrackerRemoveScreen(
         @Assisted private val mangaId: Long,
         @Assisted private val track: Track,
         @Assisted private val trackerId: Long,
+        @AppCoroutineScope private val appScope: CoroutineScope,
         private val deleteTrack: DeleteTrack,
         trackerManager: TrackerManager,
     ) : ViewModel() {
@@ -913,7 +922,7 @@ data class TrackerRemoveScreen(
         fun isDeletable() = tracker is DeletableTracker
 
         fun deleteMangaFromService() {
-            viewModelScope.launchNonCancellable {
+            appScope.launch {
                 try {
                     (tracker as DeletableTracker).delete(track)
                 } catch (e: Exception) {
@@ -923,7 +932,7 @@ data class TrackerRemoveScreen(
         }
 
         fun unregisterTracking(serviceId: Long) {
-            viewModelScope.launchNonCancellable { deleteTrack.await(mangaId, serviceId) }
+            appScope.launch { deleteTrack.await(mangaId, serviceId) }
         }
     }
 }

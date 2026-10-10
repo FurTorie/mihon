@@ -129,7 +129,7 @@ class SyncJob(private val context: Context, workerParams: WorkerParameters) :
 
         private val MIN_LIFECYCLE_INTERVAL_MS = TimeUnit.SECONDS.toMillis(30)
 
-        fun isRunning(context: Context): Boolean {
+        suspend fun isRunning(context: Context): Boolean {
             return context.workManager.isRunning(TAG_AUTO) || context.workManager.isRunning(TAG_MANUAL)
         }
 

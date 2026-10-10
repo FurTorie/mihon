@@ -3,9 +3,10 @@ package mihon.sync
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import logcat.LogPriority
 import mihon.sync.drive.GoogleDriveApi
-import tachiyomi.core.common.util.lang.withIOContext
 import tachiyomi.core.common.util.system.logcat
 import tachiyomi.domain.storage.service.StorageManager
 
@@ -34,7 +35,7 @@ class SyncUsage(
         val hasQuota: Boolean get() = quotaUsedBytes != null && (quotaLimitBytes ?: 0) > 0
     }
 
-    suspend fun read(): Usage = withIOContext {
+    suspend fun read(): Usage = withContext(Dispatchers.IO) {
         val (localBytes, localFiles) = localBackups()
         val (remoteBytes, remoteFiles) = remoteFolder()
         val quota = runCatching { driveApi.quota() }.getOrElse {

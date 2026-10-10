@@ -11,6 +11,7 @@ import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.extension.model.InstallStep
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,9 +21,9 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 import logcat.LogPriority
-import tachiyomi.core.common.util.lang.launchIO
 import tachiyomi.core.common.util.system.logcat
 
 /**
@@ -48,7 +49,7 @@ class MissingExtensionsViewModel(
     fun refresh(force: Boolean = false) {
         _state.update { State(loading = true) }
 
-        viewModelScope.launchIO {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val items = finder.findAll(refresh = force)
                 _state.update { it.copy(loading = false, items = items) }
@@ -67,7 +68,7 @@ class MissingExtensionsViewModel(
         // and a leftover "installed" would make the dialog congratulate itself and close at once.
         _state.update { State(loading = true) }
 
-        viewModelScope.launchIO {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val extension = finder.forSource(sourceId)
                 val items = extension
@@ -84,7 +85,7 @@ class MissingExtensionsViewModel(
     fun install(missing: MissingExtension) {
         if (_state.value.isInstalling) return
 
-        viewModelScope.launchIO { awaitInstall(missing) }
+        viewModelScope.launch(Dispatchers.IO) { awaitInstall(missing) }
     }
 
     /**
@@ -103,7 +104,7 @@ class MissingExtensionsViewModel(
 
         _state.update { it.copy(batch = Batch(total = targets.size, done = 0)) }
 
-        batchJob = viewModelScope.launchIO {
+        batchJob = viewModelScope.launch(Dispatchers.IO) {
             var current: MissingExtension? = null
             try {
                 targets.forEachIndexed { index, missing ->

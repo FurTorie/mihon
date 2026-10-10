@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -11,6 +12,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import eu.kanade.presentation.more.settings.Preference
 import eu.kanade.presentation.more.settings.screen.SearchableSettings
 import eu.kanade.tachiyomi.util.system.toast
+import kotlinx.coroutines.launch
 import logcat.LogPriority
 import mihon.app.di.appGraph
 import mihon.feature.extension.missing.MissingExtensionsScreen
@@ -74,6 +76,7 @@ object SyncSettingsScreen : SearchableSettings {
         val auth = remember { context.appGraph.googleDriveAuth }
         val syncPreferences = remember { context.appGraph.syncPreferences }
         val lastSyncAt by syncPreferences.lastSyncAt().collectAsState()
+        val scope = rememberCoroutineScope()
 
         return Preference.PreferenceItem.CustomPreference(
             title = stringResource(MR.strings.pref_sync_group_account),
@@ -97,10 +100,12 @@ object SyncSettingsScreen : SearchableSettings {
                     SyncJob.setupTask(context)
                 },
                 onSyncNow = {
-                    if (SyncJob.isRunning(context)) {
-                        context.toast(MR.strings.sync_in_progress)
-                    } else {
-                        SyncJob.startNow(context, visible = true)
+                    scope.launch {
+                        if (SyncJob.isRunning(context)) {
+                            context.toast(MR.strings.sync_in_progress)
+                        } else {
+                            SyncJob.startNow(context, visible = true)
+                        }
                     }
                 },
                 onOpenHistory = { navigator.push(SyncHistoryScreen()) },
