@@ -142,13 +142,13 @@ class MissingExtensionsViewModel(
 
             if (finished == null) {
                 logcat(LogPriority.WARN) { "Gave up waiting for $pkgName to finish installing" }
-                setStep(pkgName, InstallStep.Error("Gave up waiting for the installer"))
+                setStep(pkgName, InstallStep.Error)
             }
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
             logcat(LogPriority.ERROR, e) { "Could not install $pkgName" }
-            setStep(pkgName, InstallStep.Error.from(e))
+            setStep(pkgName, InstallStep.Error)
         }
     }
 

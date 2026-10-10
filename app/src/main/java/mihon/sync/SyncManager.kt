@@ -43,6 +43,7 @@ import tachiyomi.domain.manga.interactor.GetMangaByUrlAndSourceId
 import tachiyomi.domain.manga.model.Manga
 import tachiyomi.domain.storage.service.StorageManager
 import kotlin.time.Clock
+import kotlin.time.Instant
 
 /**
  * Runs one sync round against the user's Drive.
@@ -353,7 +354,7 @@ class SyncManager(
         tracks = tracking.map { it.getTrackImpl() },
         excludedScanlators = excludedScanlators,
         favoriteChangedAt = favoriteModifiedAt ?: 0L,
-        chapterListAt = chapterListAt,
+        chapterListAt = chapterListAt.takeIf { it > 0 }?.let(Instant::fromEpochMilliseconds),
     )
 
     private fun recordPullChange(before: Manga?, incoming: BackupManga, tally: SyncTally) {
@@ -519,7 +520,7 @@ class SyncManager(
      */
     private suspend fun withSyncState(backupManga: BackupManga, manga: Manga, state: SyncMangaState?) {
         backupManga.favoriteModifiedAt = state?.favoriteChangedAt?.takeIf { it > 0 }
-        backupManga.chapterListAt = manga.lastUpdate
+        backupManga.chapterListAt = manga.lastUpdate?.toEpochMilliseconds() ?: 0L
         if (backupManga.chapters.isEmpty()) return
         val decidedAt = syncRepository.getReadChangedAt(manga.id)
         backupManga.chapters.forEach { it.readModifiedAt = decidedAt[it.url] ?: 0L }

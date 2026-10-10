@@ -4,6 +4,7 @@ import tachiyomi.domain.backup.model.RestoredHistory
 import tachiyomi.domain.chapter.model.Chapter
 import tachiyomi.domain.manga.model.Manga
 import tachiyomi.domain.track.model.Track
+import kotlin.time.Instant
 
 /**
  * An entry as another device published it, with what the sync needs on top of a backup to merge it
@@ -22,8 +23,8 @@ data class SyncedManga(
     val excludedScanlators: List<String>,
     /** When the entry last joined or left the library over there, in seconds. */
     val favoriteChangedAt: Long,
-    /** When that device last refreshed the chapter list from the source. */
-    val chapterListAt: Long,
+    /** When that device last refreshed the chapter list from the source, if it ever did. */
+    val chapterListAt: Instant?,
 )
 
 data class SyncedChapter(

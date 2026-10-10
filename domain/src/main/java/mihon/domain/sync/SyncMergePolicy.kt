@@ -51,7 +51,7 @@ object SyncMergePolicy {
      */
     data class ChapterState(
         val read: Boolean,
-        val lastPageRead: Long,
+        val lastPageRead: Int,
         val decidedAt: Long,
         val bookmark: Boolean = false,
     )

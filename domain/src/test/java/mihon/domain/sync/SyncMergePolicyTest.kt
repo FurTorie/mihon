@@ -91,7 +91,7 @@ class SyncMergePolicyTest {
     // Reading progress. Two opposite hazards: dragging a reader backwards over pages they read,
     // and trapping a deliberate correction on the device that made it.
 
-    private fun state(read: Boolean, page: Long, at: Long, bookmark: Boolean = false) =
+    private fun state(read: Boolean, page: Int, at: Long, bookmark: Boolean = false) =
         SyncMergePolicy.ChapterState(read = read, lastPageRead = page, decidedAt = at, bookmark = bookmark)
 
     @Test
@@ -246,7 +246,7 @@ class SyncMergePolicyTest {
         val states = buildList {
             for (read in listOf(true, false)) {
                 for (bookmark in listOf(true, false)) {
-                    for (page in listOf(0L, 10L, 30L)) {
+                    for (page in listOf(0, 10, 30)) {
                         for (at in listOf(0L, 100L, 900L)) {
                             add(state(read = read, page = page, at = at, bookmark = bookmark))
                         }

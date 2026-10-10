@@ -29,8 +29,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import mihon.app.di.appGraph
 import mihon.icons.materialsymbols.MaterialSymbols
+import mihon.icons.materialsymbols.rounded.Check
 import mihon.icons.materialsymbols.rounded.CloudOff
-import mihon.icons.materialsymbols.rounded.Done
 import mihon.icons.materialsymbols.rounded.Sync
 import mihon.sync.SyncScheduler
 import tachiyomi.i18n.MR
@@ -80,7 +80,7 @@ fun SyncIndicator(modifier: Modifier = Modifier) {
                     )
 
                     SyncScheduler.State.Finished -> Icon(
-                        imageVector = MaterialSymbols.Rounded.Done,
+                        imageVector = MaterialSymbols.Rounded.Check,
                         contentDescription = stringResource(MR.strings.sync_complete),
                         modifier = Modifier.size(ICON_SIZE),
                     )

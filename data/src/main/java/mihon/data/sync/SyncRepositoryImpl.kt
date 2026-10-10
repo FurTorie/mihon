@@ -26,7 +26,6 @@ import tachiyomi.domain.manga.model.MangaUpdate
 import tachiyomi.domain.manga.repository.MangaRepository
 import tachiyomi.domain.track.model.Track
 import tachiyomi.domain.track.repository.TrackRepository
-import java.util.Date
 import kotlin.math.max
 
 /**
@@ -78,8 +77,8 @@ class SyncRepositoryImpl(
         if (dbManga == null && !entry.manga.favorite) return null
         val chapterSet = SyncMergePolicy.resolveChapterSet(
             isSync = dbManga != null,
-            localListAt = dbManga?.lastUpdate ?: 0,
-            incomingListAt = entry.chapterListAt,
+            localListAt = dbManga?.lastUpdate?.toEpochMilliseconds() ?: 0L,
+            incomingListAt = entry.chapterListAt?.toEpochMilliseconds() ?: 0L,
         )
         val manga = if (dbManga == null) insertManga(entry) else updateManga(entry, dbManga, chapterSet)
 
@@ -108,7 +107,7 @@ class SyncRepositoryImpl(
             remoteStatus = manga.status,
             remoteCover = manga.thumbnailUrl,
             stateChapterLastUpdate = manga.lastUpdate,
-            stateChapterNextUpdate = 0L,
+            stateChapterNextUpdate = null,
             stateChapterFetchInterval = 0L,
             stateInitialized = manga.initialized,
             userReaderFlags = manga.viewerFlags,
@@ -141,7 +140,10 @@ class SyncRepositoryImpl(
         val details = if (dbManga.initialized || !incoming.initialized) dbManga else incoming
         val manga = dbManga.copy(
             favoriteAt = if (favorite) {
-                listOfNotNull(dbManga.favoriteAt, incoming.favoriteAt).filter { it > 0 }.minOrNull() ?: 0L
+                listOfNotNull(dbManga.favoriteAt, incoming.favoriteAt)
+                    .filter { it > Manga.UNKNOWN_FAVORITE_AT }
+                    .minOrNull()
+                    ?: Manga.UNKNOWN_FAVORITE_AT
             } else {
                 null
             },
@@ -341,24 +343,23 @@ class SyncRepositoryImpl(
             .filter { it.chapterUrl in chapterIdsByUrl }
             .groupBy { chapterIdsByUrl.getValue(it.chapterUrl) }
             .forEach { (chapterId, copies) ->
-                val readAt = copies.maxOf { it.readAt?.time ?: 0L }
+                val readAt = copies.mapNotNull { it.readAt }.maxOrNull()
                 val readDuration = copies.maxOf { it.readDuration }
                 val dbHistory = dbHistoryByChapterId[chapterId]
                 if (dbHistory == null) {
                     database.historyQueries.upsert(
                         chapterId = chapterId,
-                        readAt = Date(readAt),
+                        readAt = readAt,
                         readDuration = readDuration,
                     )
                     return@forEach
                 }
-                val dbReadAt = dbHistory.read_at?.time ?: 0L
-                if (readAt <= dbReadAt && readDuration <= dbHistory.read_duration) return@forEach
-                // The upsert adds the duration it is given, so only the difference goes in. 0 is kept rather
-                // than written as NULL, since it marks history the user removed.
+                val newestReadAt = listOfNotNull(readAt, dbHistory.read_at).maxOrNull()
+                if (newestReadAt == dbHistory.read_at && readDuration <= dbHistory.read_duration) return@forEach
+                // The upsert adds the duration it is given, so only the difference goes in
                 database.historyQueries.upsert(
                     chapterId = chapterId,
-                    readAt = Date(max(readAt, dbReadAt)),
+                    readAt = newestReadAt,
                     readDuration = max(readDuration, dbHistory.read_duration) - dbHistory.read_duration,
                 )
             }

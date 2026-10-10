@@ -114,7 +114,7 @@ import mihon.feature.support.SupportUsScreen
 import mihon.feature.sync.SyncIndicator
 import mihon.icons.materialsymbols.MaterialSymbols
 import mihon.icons.materialsymbols.automirroredrounded.OpenInNew
-import mihon.icons.materialsymbols.rounded.VolunteerActivism
+import mihon.icons.materialsymbols.roundedfilled.VolunteerActivism
 import tachiyomi.core.common.Constants
 import tachiyomi.core.common.util.lang.launchIO
 import tachiyomi.core.common.util.system.logcat
@@ -447,7 +447,7 @@ class MainActivity : BaseActivity() {
                             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
                         ) {
                             Icon(
-                                imageVector = MaterialSymbols.Rounded.VolunteerActivism,
+                                imageVector = MaterialSymbols.RoundedFilled.VolunteerActivism,
                                 contentDescription = null,
                             )
                             Text(
